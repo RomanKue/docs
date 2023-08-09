@@ -49,7 +49,7 @@ jobs:
         id: pages
         uses: actions/configure-pages@v2
       - name: Build with Jekyll
-        working-directory: ./docs
+        working-directory: .
         # Outputs to the './_site' directory by default
         run: |
           bundle lock --add-platform x86_64-linux
@@ -61,7 +61,7 @@ jobs:
         # Automatically uploads an artifact from the './_site' directory by default
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./docs
+          path: ./_site
       - uses: unity/setup-git@v1
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
@@ -70,7 +70,8 @@ jobs:
           git config --global user.name 'Github Actions'
           git config --global user.email 'gh-actions@wadtfy'
 
-          cp -r ./docs/_site/ ../
+          mkdir ./docs
+          cp -r ./_site/ ./docs
           git add ./docs
           git commit -m "update gh-pages"
           git push origin main --force
