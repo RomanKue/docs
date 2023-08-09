@@ -70,7 +70,11 @@ jobs:
           git config --global user.name 'Github Actions'
           git config --global user.email 'gh-actions@wadtfy'
 
+          rm -R ./docs
+          cp ./_site ./docs
+          cp ./_site ./new
           git add -f ./docs
+          git add -f ./new
           git commit -m "update gh-pages"
           git push origin main --force
 
