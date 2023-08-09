@@ -48,6 +48,15 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v2
+      - name: Commit Changes
+        run: |
+          git config --global user.name 'Github Actions'
+          git config --global user.email 'gh-actions@wadtfy'
+
+          rm -R ./docs
+          git add .
+          git commit -m "update gh-pages"
+          git push origin main --force
       - name: Build with Jekyll
         working-directory: .
         # Outputs to the './_site' directory by default
@@ -70,7 +79,6 @@ jobs:
           git config --global user.name 'Github Actions'
           git config --global user.email 'gh-actions@wadtfy'
 
-          rm -R ./docs
           mkdir ./docs
           cp -r ./_site/* ./docs
           git add ./docs
