@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Accesses
-parent: DevOps Handbook
+parent: Cluster Handbook
 nav_order: 13
 ---
 

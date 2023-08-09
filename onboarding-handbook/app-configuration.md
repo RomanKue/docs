@@ -1,7 +1,7 @@
 ---
 layout: default
 title: App Configuration
-parent: AppDev Handbook
+parent: Onboarding Handbook
 nav_order: 3
 ---
 
