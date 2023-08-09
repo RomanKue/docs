@@ -70,9 +70,6 @@ jobs:
           git config --global user.name 'Github Actions'
           git config --global user.email 'gh-actions@wadtfy'
 
-          rm -R ./docs
-          cp -r ./_site ./docs
-
           git add -f ./docs
           git commit -m "update gh-pages"
           git push origin main --force
@@ -90,4 +87,5 @@ jobs:
 #        id: deployment
 #        uses: actions/deploy-pages@v1
 
-
+          #rm -R ./docs
+          #cp -r ./_site ./docs
