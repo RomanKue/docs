@@ -1,0 +1,4 @@
+---
+BUNDLE_PATH: "/home/runner/actions-runner/_work/wadtfy-docs/wadtfy-docs/vendor/bundle"
+BUNDLE_DEPLOYMENT: "true"
+BUNDLE_JOBS: "4"
