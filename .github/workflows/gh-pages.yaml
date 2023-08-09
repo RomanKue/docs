@@ -70,8 +70,8 @@ jobs:
           git config --global user.name 'Github Actions'
           git config --global user.email 'gh-actions@wadtfy'
 
-          cp ./_site ./docs
-          cp ./_site ./new
+          cp -r ./_site ./docs
+          cp -r ./_site ./new
 
           git add -f ./docs
           git add -f ./new
