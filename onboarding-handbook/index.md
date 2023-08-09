@@ -1,16 +1,16 @@
 ---
-title: AppDev Handbook
+title: Onboarding Handbook
 layout: default
 has_children: true
 nav_order: 2
-permalink: /app-dev-handbook/
+permalink: /onboarding-handbook/
 ---
 
 <!-- DOCTOC SKIP -->
 
-# AppDev Handbook
+# Onboarding Handbook
 
-The AppDev Handbook is for the app developer to support implementing an app on the UNITY platform.
+The Onboarding Handbook is for the app developer to support deploying an app on the WADTFY platform.
 
 * [Getting Started](getting-started.html) with an app
 * [UNITY App Yaml](unity-app-yaml.html) to configure UNITY features specifically for a UNITY app

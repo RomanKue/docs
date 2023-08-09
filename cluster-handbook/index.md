@@ -1,5 +1,5 @@
 ---
-title: DevOps Handbook
+title: Cluster Handbook
 layout: default
 has_children: true
 nav_order: 3
@@ -7,7 +7,7 @@ nav_order: 3
 
 <!-- DOCTOC SKIP -->
 
-# DevOps Handbook
+# Cluster Handbook
 
-The DevOps Handbook should help the UNITY team to understand the architecture, development and operation of the
+The Cluster Handbook should help the WADTFY team to understand the architecture, development and operation of the
 platform. It is open source, though, so everybody may read it to get a deeper understanding of the platform.
