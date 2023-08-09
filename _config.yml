@@ -1,12 +1,12 @@
-title: UNITY
-description: UNITY Docs
+title: WADTFY
+description: WADTFY Docs
 theme: just-the-docs
 
-url: https://pages.atc-github.azure.cloud.bmw/UNITY/unity/
+url: https://pages.atc-github.azure.cloud.bmw/WADTFY/wadtfy-docs/
 
 aux_links:
-  Int: https://unity-int.bmwgroup.net
-  Prod: https://unity.bmwgroup.net
+  Int: https://argocd.api-i.bmwgroup.net
+  Prod: https://argocd.api.bmwgroup.net
 
 color_scheme: unity
 
