@@ -12,6 +12,7 @@ nav_order: 3
 The Cluster Handbook should help the WADTFY team to understand the architecture, development and operation of the
 platform. It is open source, though, so everybody may read it to get a deeper understanding of the platform.
 
+<!--
 * [Getting Started](getting-started.html) with an app
 * [UNITY App Yaml](unity-app-yaml.html) to configure UNITY features specifically for a UNITY app
 * [Connect IT](connect-it.html) document your app in Connect IT
@@ -22,7 +23,8 @@ platform. It is open source, though, so everybody may read it to get a deeper un
 * [Kubernetes](kubernetes.html) interacting with the application's running containers.
 * [Diagnostics](diagnostics.html) debug and profile to troubleshoot UNITY applications.
 * [PostgreSQL Flexible Server](postgresql-flexible-server.html) provision a PostgreSQL database server.
-* [Decommission App](decommission-app.html) decommission UNITY application
+* [Decommission App](decommission-app.html) decommission UNITY application  
+-->
 
 <!--
 verify the nav_order by running (-E is for --regexp-extended)

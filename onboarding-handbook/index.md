@@ -12,6 +12,7 @@ permalink: /onboarding-handbook/
 
 The Onboarding Handbook is for the app developer to support deploying an app on the WADTFY platform.
 
+<!--
 * [Getting Started](getting-started.html) with an app
 * [UNITY App Yaml](unity-app-yaml.html) to configure UNITY features specifically for a UNITY app
 * [Connect IT](connect-it.html) document your app in Connect IT
@@ -29,6 +30,7 @@ The Onboarding Handbook is for the app developer to support deploying an app on 
 * [Diagnostics](diagnostics.html) debug and profile to troubleshoot UNITY applications.
 * [PostgreSQL Flexible Server](postgresql-flexible-server.html) provision a PostgreSQL database server.
 * [Decommission App](decommission-app.html) decommission UNITY application
+-->
 
 <!--
 verify the nav_order by running (-E is for --regexp-extended)
