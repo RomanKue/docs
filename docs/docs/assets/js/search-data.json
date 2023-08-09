@@ -1,0 +1,962 @@
+{"0": {
+    "doc": "Accesses",
+    "title": "GitHub",
+    "content": "In order to have access to the platform repositories in GitHub, a user needs to be added to the UNITY DevOps Team. If the user is an external, they should be added to the UniCode Team. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/accesses.html#github",
+    "relUrl": "/cluster-handbook/accesses.html#github"
+  },"1": {
+    "doc": "Accesses",
+    "title": "Kubernetes Cluster (M4W)",
+    "content": "In order to get access to the M4W Kubernetes Cluster, a user needs to be added in one of the ADGR Groups: . | for pdm-unity-int: APPL_pdm_unity_integration or APPL_pdm_unity_integration_view | for pdm-unity: APPL_pdm_unity_production_admin or APPL_pdm_unity_production_view | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/accesses.html#kubernetes-cluster-m4w",
+    "relUrl": "/cluster-handbook/accesses.html#kubernetes-cluster-m4w"
+  },"2": {
+    "doc": "Accesses",
+    "title": "wiz.io",
+    "content": "In order to get access to wiz.io, a service request incident to it-security-cspm:global support group needs to be created. Access will be awarded for the entire product, therefore the product (SWP-4236), needs to be specified in the incident. One of the owners of the product needs to be added as Contact to the incident. As an example, also see INC000044189072. More information can be found here. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/accesses.html#wizio",
+    "relUrl": "/cluster-handbook/accesses.html#wizio"
+  },"3": {
+    "doc": "Accesses",
+    "title": "Azure Self Service Portal",
+    "content": "In order to get access to the Azure Self Service Portal, a user needs to be assigned a role in this portal. This can be done in the Users &gt; Assign User section. This will also provide access to the Azure subscription (FPC default user role). If only access to the subscription is needed, please see the following section. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/accesses.html#azure-self-service-portal",
+    "relUrl": "/cluster-handbook/accesses.html#azure-self-service-portal"
+  },"4": {
+    "doc": "Accesses",
+    "title": "Azure Subscriptions",
+    "content": "The Azure Subscription accesses are managed by several ADGR Groups. In order to have access to one or the other Azure subscription, a user needs to be added to the correct ADGR group. The ADGR groups are: . | APPL_unity_dev_azure_admin and APPL_unity_dev_azure - for unity-test and unity-int | APPL_unity_prod_azure_admin and APPL_unity_prod_azure - for unity (production) | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/accesses.html#azure-subscriptions",
+    "relUrl": "/cluster-handbook/accesses.html#azure-subscriptions"
+  },"5": {
+    "doc": "Accesses",
+    "title": "Accesses",
+    "content": "Table of Contents . | GitHub | Kubernetes Cluster (M4W) | wiz.io | Azure Self Service Portal | Azure Subscriptions | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/accesses.html",
+    "relUrl": "/cluster-handbook/accesses.html"
+  },"6": {
+    "doc": "Alerts",
+    "title": "Setup Monitoring Contract",
+    "content": "Setting up a monitoring contract can be done in the following self-service portal: Application Monitoring Database. Only application operations managers are able to create monitoring contracts. An example request for creating a monitoring contract can be seen in the following screenshot: . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/alerts.html#setup-monitoring-contract",
+    "relUrl": "/cluster-handbook/alerts.html#setup-monitoring-contract"
+  },"7": {
+    "doc": "Alerts",
+    "title": "Alerts",
+    "content": "Table of Contents . | Setup Monitoring Contract | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/alerts.html",
+    "relUrl": "/cluster-handbook/alerts.html"
+  },"8": {
+    "doc": "App Configuration",
+    "title": "App Configuration",
+    "content": "Apps may need environment specific configuration, such as URLs to external systems or secret information like client-ids. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/app-configuration.html#app-configuration",
+    "relUrl": "/onboarding-handbook/app-configuration.html#app-configuration"
+  },"9": {
+    "doc": "App Configuration",
+    "title": "Environment Variables",
+    "content": "Environment variables can be configured in the unity-app.*.yaml files. deployments: api: # ... container: env: FOO: value: some-value BAR: value: another-value . The values may be set specific to the environment. Especially with Quarkus, environment variables can be used to set all Config Sources. Other configuration mechanisms, like config files, are currently not supported. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/app-configuration.html#environment-variables",
+    "relUrl": "/onboarding-handbook/app-configuration.html#environment-variables"
+  },"10": {
+    "doc": "App Configuration",
+    "title": "Secrets",
+    "content": "To configure an app with secret information, values can be stored in encrypted form in the unity-app.*.yaml files. deployments: api: # ... container: secretEnv: PASSWORD: value: crypt.v1[atAkljasdjs/0==] . To encrypt a value, run the encrypt workflow in your repository. There are two ways to do this, via the browser or via gh. For experts, the preferred way should be using gh, since there is no risk of caching secret data in the browser. Secrets will be available in decrypted form inside the container as environment variable. This means that any user that has access to the container can view the secret values, e.g. by running env. Ideally, secret environment variables would be unset or overwritten after reading them from the application to avoid exposing them to a potential attacker. However, this is not possible at the moment out of the box. Encrypt in the Browser . Specify the yaml path, e.g. deployments.api.container.secretEnv.PASSWORD.value, the secret value psst and the environment. The workflow will take the CRYPT_MASTER_KEY, stored in your repository, and encrypt the secret value. Then a pull request will be created, which you can review, approve and merge afterwards. 🚨 Never share the CRYPT_MASTER_KEY with anyone, this key can be used to decrypt all the secrets in your yaml file. ⚠️ One drawback of the browser based approach is, that the secret value may be cached in the browser. Make sure the secret information is removed from the browser after running the workflow. In Chrome this can be done by going back to the input, navigating down with ↓ and delete the entry with Shift + Del. You can rename the environment variable afterwards. Note, that encryption is environment specific as CRYPT_MASTER_KEYs are different, so you cannot copy the encrypted value from int to prod. Instead, run the encrypt workflow for both environments. When deploying an app, the deploy-unity-app action will validate that all secrets can be decrypted with the current CRYPT_MASTER_KEY. If decryption fails, the app cannot be deployed. Encrypt via gh . Make sure gh is installed from cli.github.com and follow GitHub CLI quickstart. Next, from your repository run: . gh workflow run encrypt \\ -f \"environment=int\" \\ -f \"yaml-path=deployments.api.container.secretEnv.PASSWORD.value\" \\ -f \"secret=psst\" . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/app-configuration.html#secrets",
+    "relUrl": "/onboarding-handbook/app-configuration.html#secrets"
+  },"11": {
+    "doc": "App Configuration",
+    "title": "Headers and Cookies",
+    "content": "You can also set custom headers or cookies to provide environment specific configuration for your app. See HTTP Headers for details. When using cookies, keep in mind that these mey be shared on the entire domain unity.bmwgroup.net. So it is recommended to use the following naming convention and config: . deployments: ui: headers: response: add: Set-Cookie: app-foo-ui-environment=int; Secure; SameSite=Strict; Path=/foo/ui . The name of the cookie app-foo-ui-environment should have the following segments: . app-&lt;name&gt;-&lt;deployment&gt;-&lt;cookie-name&gt; . | &lt;name&gt; name of your app | &lt;deployment&gt; name of the deployment (optional) | &lt;cookie-name&gt; name of the cookie value | . Setting Path=/foo/ui is also recommended. Check Set-Cookie on MDN for more details. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/app-configuration.html#headers-and-cookies",
+    "relUrl": "/onboarding-handbook/app-configuration.html#headers-and-cookies"
+  },"12": {
+    "doc": "App Configuration",
+    "title": "Prototypes",
+    "content": "Prototypes are UNITY applications which are not meant for productive use. They are used only for trying out different solutions with real data. If the prototype needs to be converted to a real application, the BMW process for creating an application needs to be followed (creating an application in ConnectIT, etc). It is possible to mark a UNITY application as a prototype via a flag in the unity-app-*.yaml file: . prototype: true . It is not possible to deploy an application on the UNITY production environment without either specifying an appId for it or marking it as a prototype. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/app-configuration.html#prototypes",
+    "relUrl": "/onboarding-handbook/app-configuration.html#prototypes"
+  },"13": {
+    "doc": "App Configuration",
+    "title": "Environment Configuration with Angular",
+    "content": "Angular recommends building different artifacts for different environments such as int and prod. However, this is in contradiction to the concept of running the same docker images on all environments, which is a good practice to ensure environments are as close as possible. This approach is recommended by UNITY. To have minimal environment specific configuration of an angular app, a mechanism is required that does not need to build separate images for int and prod. The simplest approach is to store this information in a cookie. Then, inside the app, that cookie can be accessed as follows: . /** * Extract cookie value by name * @see https://stackoverflow.com/a/15724300/1458343 */ const getCookie = (name: string) =&gt; { const value = `; ${document.cookie}`; const parts = value.split(`; ${name}=`); return parts.length === 2 ? parts.pop()?.split(\";\")?.shift() : undefined; }; @Component({ selector: \"app-root\", templateUrl: \"./app.component.html\", styleUrls: [\"./app.component.scss\"], }) export class AppComponent { //Tag with environment for header environmentTagConfig: Partial&lt;DsHeaderTagConfiguration&gt; = { label: getCookie(\"app-foo-ui-environment\"), }; // ... } . This little demo shows how the environmentTagConfig is set from a cookie app-foo-ui-environment=int. In the same way, other environment specific config may be loaded, such as a URL of an external system: . gh.service.ts: . @Injectable({ providedIn: 'root' }) export class GhService { private url = getCookie(\"app-foo-ui-gh-url\") ?? '' constructor(private http: HttpClient) { } getOctocat() { return this.http.get(this.url, {responseType: 'text'}) } } . To initialize the cookie for local development, add the following block: . app.module.ts: . if (isDevMode()) { document.cookie = `app-foo-ui-environment=dev; Secure; SameSite=Strict; Path=/foo/ui` document.cookie = `app-foo-ui-gh-url=https://api.github.com/octocat; Secure; SameSite=Strict; Path=/foo/ui` } . and in the unity-app.*.yaml files add the cookie config to use . headers: response: add: Set-Cookie: - app-foo-ui-environment=foo; Secure; SameSite=Strict; Path=/foo/ui - app-foo-ui-gh-url=https://api.github.com/octocat; Secure; SameSite=Strict; Path=/foo/ui . Which could be set as app-foo-ui-gh-url=https://api.github.com/octocat . An alternative approach would be serving environment specific parameters from a backend’s REST resource, which could be configured via environment variables or data in a database. Currently, environment variables cannot be used directly in a nginx deployment. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/app-configuration.html#environment-configuration-with-angular",
+    "relUrl": "/onboarding-handbook/app-configuration.html#environment-configuration-with-angular"
+  },"14": {
+    "doc": "App Configuration",
+    "title": "App Configuration",
+    "content": "Table of Contents . | App Configuration . | Environment Variables | Secrets . | Encrypt in the Browser | Encrypt via gh | . | Headers and Cookies | Prototypes | Environment Configuration with Angular | . | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/app-configuration.html",
+    "relUrl": "/onboarding-handbook/app-configuration.html"
+  },"15": {
+    "doc": "Architecture",
+    "title": "Architecture",
+    "content": "The following diagram gives an overview on the UNITY architecture. graph TB subgraph K8s Cluster [\"K8s Cluster 4Wheels Managed\"] subgraph ns [\"prod\"] subgraph app-yaml [unity-app.yaml file] end subgraph unity-operator-deployment [UNITY Operator] end subgraph app-deployment [app deployment] subgraph sidecar-container [\"sidecar (Certificates, Authorization, Metrics, Traces)\"] end subgraph main-container [app container] end end subgraph app-ingress [app ingress] end subgraph app-services [app services] end subgraph oauth2-proxy [OAuth2 Proxy] end end end subgraph webeam [WebEAM] end subgraph external-service [\"External Service\"] end subgraph client [Client] end subgraph GitHub Enterprise [\"GitHub Enterprise (ATC)\"] subgraph app-repo [app repository] app-yaml end subgraph container-registry subgraph app-image [app image] end end end app-repo-- push --&gt;app-image app-repo-- update --&gt;app-yaml app-deployment-- pull --&gt;app-image sidecar-container---&gt;oauth2-proxy unity-operator-deployment-- deploy --&gt;app-deployment unity-operator-deployment-- watch --&gt;app-yaml oauth2-proxy---&gt;webeam sidecar-container&lt;-- http --&gt;main-container client&lt;-- https --&gt;app-ingress app-ingress&lt;-- https --&gt;sidecar-container app-services&lt;-- https --&gt;sidecar-container app-services&lt;-- https --&gt;external-service . There is only one app repository, app image and app deployment as an example in this diagram. In reality, there are many different app repositories such as e.g. app-foo, app-bar, … In addition, from each repository, multiple images can be pushed to the container registry (e.g. app-foo-ui and app-foo-api, …) leading to multiple deployments. For a more detailed diagram, see Kubernetes. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/architecture.html#architecture",
+    "relUrl": "/cluster-handbook/architecture.html#architecture"
+  },"16": {
+    "doc": "Architecture",
+    "title": "Architecture",
+    "content": "Table of Contents . | Architecture | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/architecture.html",
+    "relUrl": "/cluster-handbook/architecture.html"
+  },"17": {
+    "doc": "Authentication and Authorization",
+    "title": "Authentication and Authorization",
+    "content": "Every UNITY app is protected by strong authentication (two-factor authentication with YubiKey) by default. 🚨 Note that the YubiKey needs to be enabled on strong-int.bmwgroup.net by every user, to be able to use it on the integration environment. The way, authentication is working can be configured in the unity-app.*.yaml files like shown below: . auth: enabled: true minAuthLevel: 7000 oauth2: enabled: true roles: b2x: any: - B2B_I k8s: enabled: false . Details on each attribute can be found in the unity-app schema. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/authentication-and-authorization.html#authentication-and-authorization",
+    "relUrl": "/onboarding-handbook/authentication-and-authorization.html#authentication-and-authorization"
+  },"18": {
+    "doc": "Authentication and Authorization",
+    "title": "Authentication",
+    "content": "As previously stated, each app is protected with authentication by default. In rare cases, this protection can be disabled by setting the auth.enabled flag to false. Note, that this will expose all endpoints publicly to the entire BMW intranet! Disabling authentication is recommended only, if the content is public, or if authentication and authorization is implemented on the application level. That means, the app development team is responsible for handling all traffic in a secure way. Excluded Paths . It is possible to exclude some paths from being access protected by authentication and authorization. For example, the OpenAPI endpoint or the SwaggerUI page could be made public by excluding it from authorization as shown blow. auth: excludedPaths: - /my-app/api/open-api/swagger-ui - /my-app/api/openapi . Excluded Headers . It is possible disable the authentication and authorization depending on some headers values. It is possible to also use pseudo-headers. For example, when the :method pseudo-header has one of the given values, there won’t be any authentication or authorization checks. The headers values are provided via a regular expression, which is in Google LE2 dialect. auth: excludedHeaders: - name: \":method\" valuesRegex: OPTIONS|PATCH . OAuth2 . If the flag auth.oauth.enabled is set to true, an unauthenticated request will initiate a redirect to the WebEAM login screen. This is the recommended setting for front-ends. REST services, that are called via XHR requests, should typically not enable OAuth2. An unauthenticated call (due to invalid or expired token or cookie) to the back-end, should not respond with a redirect to a login-page, but with a 401 Unauthorized status code. The calling web-page is responsible for reacting to this status code. The simplest possible way is to force a page reload, which will initiate the OAuth2 flow for the user. Here is a simple angular HTTP interceptor, which triggers the page reload. import {Injectable} from '@angular/core'; import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http'; import {catchError, Observable, throwError} from 'rxjs'; @Injectable() export class UnauthorizedInterceptor implements HttpInterceptor { intercept(req: HttpRequest&lt;unknown&gt;, next: HttpHandler): Observable&lt;HttpEvent&lt;unknown&gt;&gt; { return next.handle(req).pipe( catchError((error: unknown) =&gt; { if (error instanceof HttpErrorResponse) { if (error.status === 401) { location.reload(); } } return throwError(() =&gt; error); })); } } . In addition, the interceptor must be added to the providers in the AppModule. @NgModule({ // ... providers: [ { multi: true, provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, } ], }) export class AppModule { } . Minimum Authentication Level . By default, the highest auth level (7000) is required to authenticate to a UNITY app. Currently, users need to authenticate with a YubiKey as second factor to get the level 7000 authentication. If the application accepts request with lower auth levels as well, it may reduce the default auth.minAuthLevel to a lower value. auth: minAuthLevel: 4000 . Note that the user will still be redirected to a login-page which requests authenticating with a YubiKey. To redirect to a different login page, the OAuth2 flow must be initiated on the application level, as this is not supported by UNITY out of the box. This means, . auth: enabled: false . must be set for the UI and the SPA needs to handle the OAuth2 flow. A typical use case would be to serve only data with a low protection need on auth level 1000 (single factor authentication) and all data on authentication level 7000. The current user’s auth level is passed as a custom header Unity-AuthLevel to the upstream backend, which can be evaluated in a Quarkus back-end like shown below. @Path(\"/v1/\") public class AuthLevelResource { @GET @Produces(MediaType.TEXT_PLAIN) public String authLevel(@HeaderParam(\"Unity-AuthLevel\") final String authLevel) { return \"Your auth level is \" + authLevel; } } . Read more about auth levels in the WebEAM documentation. K8s . If the flag auth.k8s.enabled is set to true, the application will be able to handle kubernetes ServiceAccount tokens. In order to connect to an application using the service account token you must set the Authorization header to Bearer &lt;myAppsSaToken&gt;. Additionally, the custom header Unity-Authorization-Type must be set to Kubernetes-Service-Account to differentiate these requests from the ones using WEN token. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/authentication-and-authorization.html#authentication",
+    "relUrl": "/onboarding-handbook/authentication-and-authorization.html#authentication"
+  },"19": {
+    "doc": "Authentication and Authorization",
+    "title": "Authorization",
+    "content": "Simple role requirements can be configured in the unity-app.*.yaml files. B2X Roles . If the user requires a B2X role, like PMD or B2B_I, the following sample configuration can be employed. auth: roles: b2x: any: - PMD - B2B_I . This will reject any request with 403 Forbidden, if the user does not have either the PMD or the B2B_I role. More advance role checks must be performed in the application’s back-end. Roles are passed as custom headers: Unity-B2XRole. Note that this header is repeated, if multiple roles are requested. Also note that only roles from the auth.roles.b2x.any list are passed in that header. In a Quarkus back-end, roles can be evaluated as follows. @Path(\"/v1/\") public class RolesResource { @GET @Produces(MediaType.TEXT_PLAIN) public String roles(@HeaderParam(\"Unity-B2XRole\") final List&lt;String&gt; roles) { return \"Your roles are: \" + String.join(\", \", roles); } } . Machine-to-Machine (M2M) . It is possible to authorize WebEAM M2M client ids to access the applications. Optionally, for each of the authorized client ids, roles may be defined which will be afterwards passed to the application via the Unity-B2XRole header. The M2M authorization can be enabled via the unity-app.*.yaml files: . auth: realm: machine2machine: client-id-1: roles: b2x: - PMD - B2B_I . If the client id is not allowed to access the application with any of the configured roles (defined in the auth.roles section), then response will be 403 Forbidden. Instead of the user information headers, in this case the Unity-ClientId header will be set to the M2M client id. Other Role Providers (RightNow, RoMa, Active Directory, …) . If the app requires to use a role provider, which is not integrated into UNITY, it must be handled on application level. This means, the unity-app.*.yaml file should contain a configuration, which only requests authentication: . auth: oauth2: enabled: true . This will make sure, all requests passed to the application have a Authorization: Bearer xyz... header with a valid WebEAM Bearer token. With that token, any role provider can be used, either employing a custom implementation, or an extension. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/authentication-and-authorization.html#authorization",
+    "relUrl": "/onboarding-handbook/authentication-and-authorization.html#authorization"
+  },"20": {
+    "doc": "Authentication and Authorization",
+    "title": "User Information",
+    "content": "Some user (or M2M client id)’s attributes are passed as custom headers. The list below shows, what can be evaluated by the back-end: . | Unity-Email e.g. user@example.com | Unity-B2XRole e.g. B2B_I | Unity-AuthLevel e.g. 7000 | Unity-UserName e.g. Charlie Brown | Unity-UserSub e.g. q12345 | Unity-Department e.g. FG-123 | Unity-ClientId e.g. 8eeb5128-87ad-48f3-a30b-631db0fb11e9 (header is not set for human users) | . For M2M clients, only the following headers will be present: Unity-B2XRole and Unity-ClientId. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/authentication-and-authorization.html#user-information",
+    "relUrl": "/onboarding-handbook/authentication-and-authorization.html#user-information"
+  },"21": {
+    "doc": "Authentication and Authorization",
+    "title": "Authentication and Authorization",
+    "content": "Table of Contents . | Authentication and Authorization . | Authentication . | Excluded Paths | Excluded Headers | OAuth2 | Minimum Authentication Level | K8s | . | Authorization . | B2X Roles | Machine-to-Machine (M2M) | Other Role Providers (RightNow, RoMa, Active Directory, …) | . | User Information | . | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/authentication-and-authorization.html",
+    "relUrl": "/onboarding-handbook/authentication-and-authorization.html"
+  },"22": {
+    "doc": "Certificates",
+    "title": "Certificates",
+    "content": "Good news, UNITY handles all certificates for you! This section clarifies how UNITY does that. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/certificates.html#certificates",
+    "relUrl": "/onboarding-handbook/certificates.html#certificates"
+  },"23": {
+    "doc": "Certificates",
+    "title": "Ingress",
+    "content": "The following diagram illustrates TLS termination for ingress traffic: . graph TB subgraph UNITY subgraph pod envoy-- HTTP request --&gt;main main-- HTTP response --&gt;envoy end end client-- HTTPS request --&gt;envoy envoy-- HTTPS response --&gt;client . In this diagram, envoy terminates TLS traffic from the client and encrypts traffic with a certificate and key, provided by UNITY. Traffic inside the pod can then be handled via plain HTTP. The application does not need to handle a certificate key to encrypt traffic. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/certificates.html#ingress",
+    "relUrl": "/onboarding-handbook/certificates.html#ingress"
+  },"24": {
+    "doc": "Certificates",
+    "title": "Egress",
+    "content": "The following diagram illustrates TLS termination for egress traffic: . graph TB subgraph UNITY subgraph pod envoy-- HTTP response --&gt;main main-- HTTP request --&gt;envoy end end service-- HTTPS response --&gt;envoy envoy-- HTTPS request --&gt;service . In this diagram, the app acts a client and calls the external service through envoy. Envoy has a trust store configured, which contains all current certificate trusted in the BMW organization. Certificates are validated using this trust store. The app itself does not need to handle any trust stores or certificates. UNITY App Services . Unity integrates some services on port 8008. This means, UNITY managed services can be called on that port. Here is an example on how to do this in a Quarkus app: . application.properties . quarkus.rest-client.services.url=http://localhost:8008/services/api . DevModelRangeSearch.java . @RegisterRestClient(configKey = \"services\") @Consumes({MediaType.APPLICATION_JSON}) @Produces({MediaType.APPLICATION_JSON}) @Path(\"pip-vehicle/dev-model-ranges/v2:search\") public interface DevModelRangeSearch { @POST CompletionStage&lt;PipSearchResultDO&lt;DevModelRangeDO&gt;&gt; searchAsync(DevModelRangeSearchDO devModelRangeSearchDO); } . Other Services . To integrate other external services, the unity-app.*.yaml files need to be adjusted like shown below: . deployments: api: # ... proxyPorts: 9000: host: example.com replicas: 1 . This proxy port config will allow calling https://example.com on http://localhost:9000 from the app’s container. More detailed, TLS will be terminated by the envoy proxy and exposed as http endpoint without TLS inside the pod. One caveat may be a redirect response from the external service pointing to another host. If the app’s client is configured such that it follows redirects, it may fail to connect the host from the Location header. Here is a specific example. The app calls https://example.com via http://localhost:9000 . GET http://localhost:9000/foo/bar &lt; Location: https://another-example.com/foo/bar . This will most likely fails, since https://another-example.com is not trusted. It is recommended to no follow redirects from within the app’s client and configure the correct host in the app. If this cannot be done, the app must manage the trust store itself by adding relevant certificates to the app image trust store and the proxyPorts feature cannot be used. The default protocol for proxyPorts is HTTP. However, other protocols are also supported. This is specified by the type property. deployments: api: # ... proxyPorts: 9000: host: groupdir.bmwgroup.net port: 636 type: TCP replicas: 1 . In this example, the application can connect (via JNDI, for example) to LDAP. The connection will be secure in this case, UNITY will handle all SSL certificate handling. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/certificates.html#egress",
+    "relUrl": "/onboarding-handbook/certificates.html#egress"
+  },"25": {
+    "doc": "Certificates",
+    "title": "Certificates",
+    "content": "Table of Contents . | Certificates . | Ingress | Egress . | UNITY App Services | Other Services | . | . | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/certificates.html",
+    "relUrl": "/onboarding-handbook/certificates.html"
+  },"26": {
+    "doc": "Certs",
+    "title": "Certs",
+    "content": "Unity handles all certificate management for an app. This means that app developers can develop an entire backend without ever needing to touch a certificate or trust store. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/certs.html#certs",
+    "relUrl": "/cluster-handbook/certs.html#certs"
+  },"27": {
+    "doc": "Certs",
+    "title": "Architecture",
+    "content": "In UNITY, all HTTP traffic is encrypted using TLS. Encryption is handled by different certificates, as outlined below: . | Client to ingress controller | Ingress controller to Pod | . graph TB client-- \"unity.bmwgroup.net (BMW root signed)\" --&gt;ingress-controller subgraph K8s unity-certificate&gt;unity-certificate]-. \"cert manager generates (BMW root signed)\" .-&gt;unity-tls&gt;unity-tls] unity-tls&gt;unity-tls]-.\"kyverno generates key with CA (tmp)\" .-&gt;unity-tls-with-ca&gt;unity-tls-with-ca] bmw-certificates&gt;bmw-certificates]-. \"trust\" .-&gt;ingress-controller unity-tls-with-ca-.\"encrypt\" .-&gt;ingress-controller ingress-controller-- \"unity.bmwgroup.net (BMW root signed)\" --&gt;envoy bmw-certificates&gt;bmw-certificates]-. \"trust\" .-&gt;envoy unity-tls&gt;unity-tls]-.\"encrypt\" .-&gt;envoy subgraph pod envoy-- \"http (in memory)\" --&gt;main end end . The sections below outline the details. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/certs.html#architecture",
+    "relUrl": "/cluster-handbook/certs.html#architecture"
+  },"28": {
+    "doc": "Certs",
+    "title": "TLS",
+    "content": "When an end-user opens a UNITY app’s UI in the web browser, they call a URL like https://unity.bmwgroup.net/foo/ui. The request is handled by the ingress controller of the Kubernetes cluster, which also terminates TLS. The ingress controller is configured via an Ingress object, configured via the unity-app Helm chart. The nginx ingress controller can be configured via annotations to handle TLS correctly. All ingress objects MUST have the following annotations set: . nginx.ingress.kubernetes.io/backend-protocol: HTTPS nginx.ingress.kubernetes.io/proxy-ssl-name: \"&lt;service name&gt;.&lt;namespace&gt;.svc.cluster.local\" nginx.ingress.kubernetes.io/proxy-ssl-secret: \"&lt;namespace&gt;/&lt;secret name&gt;\" nginx.ingress.kubernetes.io/proxy-ssl-verify: \"on\" . These annotations ensure that TLS is terminated by the ingress controller and re-encrypted on the upstream. To terminate TLS using a certificate that is signed by a BMW certificate authority, the cert-manager is employed. The cert manager handles a Certificate CRD, which instructs the cert manager to generate a certificate and store it in a secret. Then a Kyverno policy creates another secret that contains the generated server certificate as well as the intermediate CA. This is a temporary solution by 4Wheels Managed to serve intermediate certificates . Additional infoformation can be found in the Certificates documentation. Upstream traffic from the ingress controller to the pod (Envoy) is also handled by BMW signed certificates. In the pod, TLS is terminated by an envoy proxy. Envoy’s Secret Discovery Service (SDS) automatically picks up new certificates, whenever the content of the mounted secret changes, without restarting the Envoy container. This ensures that certificates can be rotated without restarting any containers or pods. The configuration of the Envoy proxy is also part of the unity-app Helm chart. Finally, the Envoy proxy passes traffic to the app’s main container within the pod without encryption via HTTP. By terminating TLS at the Envoy, the app’s main container does not need to handle any certificates or secrets. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/certs.html#tls",
+    "relUrl": "/cluster-handbook/certs.html#tls"
+  },"29": {
+    "doc": "Certs",
+    "title": "How to Inspect Certificates",
+    "content": "When something breaks, it is important to know how to inspect the various certificates. If the ingress controller stops serving traffic, one possible reason could be an issue with the certificate configuration. The first step for troubleshooting should be inspecting the logs in Grafana Loki: . Next, the certificates can be inspected locally as follows. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/certs.html#how-to-inspect-certificates",
+    "relUrl": "/cluster-handbook/certs.html#how-to-inspect-certificates"
+  },"30": {
+    "doc": "Certs",
+    "title": "Client to Ingress Controller",
+    "content": "To inspect the client to ingress controller certificate, you would need to run the following scripts: . kubectl get certificate -oyaml unity-certificate . The certificates can be extracted from the secret where the cert manager stores them using the following commands: . kubectl get secrets unity-tls -ojson | jq '.data[\"tls.key\"] | @base64d' -r &gt; tls.key kubectl get secrets unity-tls -ojson | jq '.data[\"tls.crt\"] | @base64d' -r &gt; tls.crt kubectl get secrets unity-tls-with-ca -ojson | jq '.data[\"tls.crt\"] | @base64d' -r &gt; tls-with-ca.crt . Using openssl, you can display the contents of the certificate: . cat tls.crt | openssl x509 -noout -text -certopt no_header,no_version,no_serial,no_signame,no_issuer,no_pubkey,no_sigdump,no_aux . To validate whether a certificate key and crt match, you can compare the checksums using the following commands: . CRT_MD5=$(openssl x509 -noout -modulus -in tls.crt | openssl md5) KEY_MD5=$(openssl rsa -noout -modulus -in tls.key | openssl md5) echo $CRT_MD5 echo $KEY_MD5 echo \"diff:\" diff &lt;(echo \"$CRT_MD5\") &lt;(echo \"$KEY_MD5\") . If the checksums are equal (the diff is empty), the pair is valid. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/certs.html#client-to-ingress-controller",
+    "relUrl": "/cluster-handbook/certs.html#client-to-ingress-controller"
+  },"31": {
+    "doc": "Certs",
+    "title": "Ingress Controller to Pod",
+    "content": "TLS from the ingress controller to the service (pod) is handled by the same certificate. To ensure that the pod is serving traffic with the certificate from the secret (and not using an outdated certificate, e.g. after the certificate was rotated to a new one), you can map the port of the service to localhost using the following command: . NAME=&lt;name of the app, e.g. services&gt; DEPLOYMENT=&lt;name of the deployment, e.g. api&gt; kubectl port-forward svc/app-$NAME-$DEPLOYMENT 8000:8000 . Then, in a separate shell, you can connect to the mapped port and dump the served certificate: . openssl s_client -showcerts -connect localhost:8000 -servername app-$NAME-$DEPLOYMENT &lt;/dev/null 2&gt;/dev/null . Make sure the served certificate is the same as the one from the secret: . kubectl get secret unity-tls -ojson | jq -r '.data[\"tls.crt\"] | @base64d' . The ingress controller should trust this certificate, which is configured in the following annotation: . kubectl get ingress app-$NAME-$DEPLOYMENT -ojson | jq -r '.metadata.annotations[\"nginx.ingress.kubernetes.io/proxy-ssl-secret\"]' . It is also crucial that nginx.ingress.kubernetes.io/proxy-ssl-verify is set to on and nginx.ingress.kubernetes.io/proxy-ssl-name is set to a value in the certificate. You can validate this with the following command: . SNI=$(kubectl get ingress app-$NAME-$DEPLOYMENT -ojson | jq -r '.metadata.annotations[\"nginx.ingress.kubernetes.io/proxy-ssl-name\"]') cat svc-tls.crt | openssl x509 -noout -text -certopt no_header,no_version,no_serial,no_signame,no_issuer,no_pubkey,no_sigdump,no_aux | grep $SNI . Finally, it may still be possible that one of the pods backing the service is serving the correct certificate while another one does not. To ensure this, map the port of the individual pods instead of mapping the service port and repeat the certificate validation. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/certs.html#ingress-controller-to-pod",
+    "relUrl": "/cluster-handbook/certs.html#ingress-controller-to-pod"
+  },"32": {
+    "doc": "Certs",
+    "title": "Certs",
+    "content": "Table of Contents . | Certs . | Architecture | TLS | How to Inspect Certificates | Client to Ingress Controller | Ingress Controller to Pod | . | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/certs.html",
+    "relUrl": "/cluster-handbook/certs.html"
+  },"33": {
+    "doc": "Cluster Migration",
+    "title": "Steps to perform when migrating a to a new cluster",
+    "content": ". | Request a change to Managed4Wheels to create a new namespace | Create a new branch in unity-chart. The branch should have the name / | Adapt unity-chart values.yaml in the newly created branch. For the first tests, the niceFqdn should have the same value as namespace.dnsZone. The certificates in UNITY are configured to handle both URLs. | Bootstap unity-chart in the new environment according to this documentation. | Add/Adapt necessary secrets in the UNITY/unity repository and adapt actions if necessary. | Add new branch to unity-chart staging | Create app bootstrapping artifacts using the recreate-app-service-account workflow. This workflow will also update the application GHE secrets. It is recommended to do this at first for one application and if everything is ok, this can be done afterwards for all applications. | If an existing environment is migrated, the master keys from the old environment need to be copied to the new one to avoid reencryption. | If everything is working fine, the CNAME can be changed to point to the new cluster. This can be done via an ITSM ticket. As an example, the following ticket can be used: INC000042547780. | Finally, a cleanup of the old environment should be performed (remove unnecessary branch from the unity-chart, remove old namespace, remove old cluster, etc). | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/cluster-migration.html#steps-to-perform-when-migrating-a-to-a-new-cluster",
+    "relUrl": "/cluster-handbook/cluster-migration.html#steps-to-perform-when-migrating-a-to-a-new-cluster"
+  },"34": {
+    "doc": "Cluster Migration",
+    "title": "Cluster Migration",
+    "content": "Table of Contents . | Steps to perform when migrating a to a new cluster | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/cluster-migration.html",
+    "relUrl": "/cluster-handbook/cluster-migration.html"
+  },"35": {
+    "doc": "Connect IT",
+    "title": "Connect IT",
+    "content": "The central system for Service Asset and Configuration Management at BMW is Connect IT. Apps are responsible for maintaining Connect IT information. To indicate that an app runs on UNITY, the standard platform SPL-781: UNITY Application Ecosystem should be added to the Technical Platform Elements of each app running on UNITY. To add UNITY, switch to the Technical Architecture tab and open the Technical Platform Elements section. Then select Add Existing Standard Platform…. Next, search SPL-781: UNITY Application Ecosystem and add it. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/connect-it.html#connect-it",
+    "relUrl": "/onboarding-handbook/connect-it.html#connect-it"
+  },"36": {
+    "doc": "Connect IT",
+    "title": "App-ID",
+    "content": "A valid app ID from Connect IT is required for production deployments in UNITY. A production deployment is only possible when the appId is configured in the unity-app.*.yaml files. name: foo appId: APP-123 . Note that the UNITY team will use this information for change management and incident management. For example, the ITSM Service of the deployment on the CMDB Information tab will be used in case of an incident. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/connect-it.html#app-id",
+    "relUrl": "/onboarding-handbook/connect-it.html#app-id"
+  },"37": {
+    "doc": "Connect IT",
+    "title": "Connect IT",
+    "content": "Table of Contents . | Connect IT . | App-ID | . | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/connect-it.html",
+    "relUrl": "/onboarding-handbook/connect-it.html"
+  },"38": {
+    "doc": "Database Incident Recovery",
+    "title": "Database Incident Recovery",
+    "content": "The sections below describe certain incidents related to databases and how to recover from them. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/database-incident-recovery.html#database-incident-recovery",
+    "relUrl": "/cluster-handbook/database-incident-recovery.html#database-incident-recovery"
+  },"39": {
+    "doc": "Database Incident Recovery",
+    "title": "Restore Database Manually",
+    "content": "In case a manual restore of the database server is needed (e.g. the server was accidentally deleted) it can be done by following these steps: . | Recreate the azure resources for the database server through the unity-app.*.yaml with the exact same configuration. You can get the last configuration from the git history of the unity-app.*.yaml file. Alternatively you can undelete the container of the database in the azure portal, this should also contain the required configuration(⚠️In this case don’t forget to delete the container again before recreating the resources). | In the backup storage account (azure portal): delete the newly created blob container and undelete the container containing the backup to be restored (⚠️check the last modified timestamps, the names will be the same). | Create a secret with one of the access keys of the backup storage account. This secret will be used to mount the azure file share containing the backup in the container to later restore it. apiVersion: v1 kind: Secret metadata: name: app-test-pfs-db-foo-storage-account namespace: test stringData: azurestorageaccountname: unitytestbackupv1 # the name of the storage account containing the backups azurestorageaccountkey: unitytestbackupv1_acceskey # one of the access keys to the storage account containing the backups type: Opaque . | Create a job to restore the DB Server. The job has two steps, first the initContainer copies the backup from the blob container to the azure file share then the backup will be restored into the database server created in the first step. In the following example you can replace all the occurrences of app-test-pfs-db-foo with your database name. Every credential and certificate required is saved in the keepass repo, or you can run the store-secrets workflow in the unity-terraform repo to get them. The Service Principle certificate can be encoded in base64 using any linux terminal (e.g. in GitBash cat /path/to/certificate | base64). ️The container image must contain the psql with the postgres version specified in step 1. apiVersion: batch/v1 kind: Job metadata: name: app-test-pfs-db-foo-restore-backup namespace: test labels: unity.bmwgroup.net/restore-database-backup: \"app-test-pfs-db-foo\" spec: template: spec: initContainers: - args: - -c - echo $AZURE_CLIENT_CERT_PFX_B64 | base64 -d &gt; $AZCOPY_SPA_CERT_PATH; mkdir /backupfileshare/app-test-pfs-db-foo; azcopy copy \"https://unitytestbackupv1.blob.core.windows.net/app-test-pfs-db-foo/app-test-pfs-db-foo.tar\" /backupfileshare/app-test-pfs-db-foo; command: - sh env: - name: AZCOPY_AUTO_LOGIN_TYPE value: SPN - name: AZCOPY_TENANT_ID value: tenant-id # the azure tenant id - name: AZCOPY_SPA_CERT_PATH value: /tmp/cert.pfx - name: AZCOPY_SPA_APPLICATION_ID value: application-id # the client id of the service principal - name: AZCOPY_LOG_LOCATION value: /tmp - name: AZCOPY_JOB_PLAN_LOCATION value: /tmp - name: AZURE_CLIENT_CERT_PFX_B64 value: client-certificate # the certificate to the SP base64 encoded image: containers.atc-github.azure.cloud.bmw/unity/azcopy:2023-07-04t082112z-52b72fd # the latest azcopy image name: blob-to-fileshare resources: limits: cpu: 500m memory: 512Mi requests: cpu: 200m memory: 256Mi securityContext: allowPrivilegeEscalation: false capabilities: drop: - ALL readOnlyRootFilesystem: false volumeMounts: - mountPath: /backupfileshare name: backupfileshare imagePullSecrets: - name: containers.atc-github.azure.cloud.bmw containers: - args: - -c - | set -eux cd /backupfileshare/db-foo tar -xvmpf db-foo.tar gzip -d -c backup-all.gz &gt; backup-all.out psql -f backup-all.out postgres rm backup-all.gz rm backup-all.out gzip -d -c backup-postgres.gz &gt; backup-postgres.out psql -f backup-postgres.out postgres rm backup-postgres.gz rm backup-postgres.out command: - bash env: - name: PGHOST value: app-test-pfs-db-foo.postgres.database.azure.com - name: PGUSER value: postgres # the postgres admin - name: PGPASSWORD value: password # the admin password image: postgres:14 # the image must contain the required postgres version name: restore resources: limits: cpu: 500m memory: 512Mi requests: cpu: 200m memory: 256Mi securityContext: allowPrivilegeEscalation: false capabilities: drop: - ALL readOnlyRootFilesystem: false volumeMounts: - mountPath: /backupfileshare name: backupfileshare restartPolicy: OnFailure securityContext: runAsNonRoot: true runAsUser: 10000 runAsGroup: 10000 seccompProfile: type: RuntimeDefault volumes: - csi: driver: file.csi.azure.com volumeAttributes: secretName: app-test-pfs-db-foo-storage-account # the name of the secret from step 3 shareName: app-test-pfs-db-foo name: backupfileshare ttlSecondsAfterFinished: 86400 . ⚠️It’s important to add the unity.bmwgroup.net/restore-database-backup label with the proper value (&lt;app-name&gt;-pfs-&lt;database-server-name&gt;), this will prevent the operator to execute any update on the database during the restore process. ⚠️Also please note that when trying to restore a large database, it might be necessary to increase the resources (of both the initContainer and the main container). | After the job is done verify the logs in grafana. It is possible that there are some errors related to database objects managed by azure and/or the default postgres database, because the postgres admin user is not a superuser, to whom azure does not give access. If there isn’t any error related to the database(s) managed by the application and the restore was successful delete the secret created in step 3. | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/database-incident-recovery.html#restore-database-manually",
+    "relUrl": "/cluster-handbook/database-incident-recovery.html#restore-database-manually"
+  },"40": {
+    "doc": "Database Incident Recovery",
+    "title": "Fix Terraform Locked State",
+    "content": "Sometimes it might happen that all terraform operations fail because of being in a locked state. There are two possibilities to recover from this situation: . | via the Azure portal UI, the lease can be broken: . | by running the Terraform command force-unlock . azcopy login azcopy copy https://unitytestv3.blob.core.windows.net/unity-grafana-test . --recursive cd unity-grafana-test terraform force-unlock &lt;LOCK_ID&gt; . | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/database-incident-recovery.html#fix-terraform-locked-state",
+    "relUrl": "/cluster-handbook/database-incident-recovery.html#fix-terraform-locked-state"
+  },"41": {
+    "doc": "Database Incident Recovery",
+    "title": "Cleanup Resources When Destroy Is Interrupted",
+    "content": "There are cases when the database destroy operation is interrupted for various reasons. The most common reason is when the unity operator is restarted while destroy operation was in progress. Steps to follow: . | Check to see if the database container is in a locked stated and if its unlock it, see: Fix Terraform Locked State | If the secret do not exist, add secret of type postgresql-flexible-server/destroy manually for that database, e.g.: # Make sure you adapt the names accordingly kubectl apply -f - &lt;&lt;EOF apiVersion: v1 kind: Secret metadata: annotations: unity-operator.unity.bmwgroup.net/azure-resource-group-name: app-test unity-operator.unity.bmwgroup.net/disabled: \"false\" labels: app.kubernetes.io/managed-by: unity app.kubernetes.io/name: app-test-pfs-db-attila-azure-restore-v3-manually-added unity-operator.unity.bmwgroup.net/postgresql-flexible-server-secret-name: app-test-pfs-db-attila-azure-restore-v3 name: app-test-pfs-db-attila-azure-restore-v3-manually-added namespace: test type: postgresql-flexible-server/destroy EOF . and if the secret exists, just edit the secret, e.g. add a random label, to trigger the reconciliation loop. | Checkout unity-operator logs to see if destroy was done with success. If not, delete the secret manually, fix the issue from logs (if you can) and repeat the process | If you get an error message like: Job 110449 failed with\\nstatus: 500 and message: \\\"ERROR : A problem occurred. - Failed to perform\\n'read' on resource(s) of type 'privateDnsZones/virtualNetworkLinks' . just edit the secret again, add a random label to trigger the reconciliation loop again (you might get lucky). This is an error message coming from https://manage.azure.bmw.cloud/. If the job still fails, open an incident to public-cloud-framework:global . | If the above steps did not work, follow Manually Run Terraform Destroy From Local | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/database-incident-recovery.html#cleanup-resources-when-destroy-is-interrupted",
+    "relUrl": "/cluster-handbook/database-incident-recovery.html#cleanup-resources-when-destroy-is-interrupted"
+  },"42": {
+    "doc": "Database Incident Recovery",
+    "title": "Manually Run Terraform Destroy From Local",
+    "content": "In some cases the automatic destroy fails without being interrupted, for example: When someone creates a new DB server with an invalid configuration (e.g. too early PITR time stamp). Terraform will not be able to create the Server. When trying to delete that DB server, the destroy change request will fail, because the backup job cannot be executed, because there is no fqdn in the terraform output, e.g. error: \"could not read outputs: terraform output empty for \\\"fqdn\\\"\". Steps to follow: . | Download terraform files from db related container, e.g. | Unzip terraform files | Run terraform init | Run terraform destroy | . If the above steps do not succeed you should follow Manually Delete Database Resources . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/database-incident-recovery.html#manually-run-terraform-destroy-from-local",
+    "relUrl": "/cluster-handbook/database-incident-recovery.html#manually-run-terraform-destroy-from-local"
+  },"43": {
+    "doc": "Database Incident Recovery",
+    "title": "Manually Delete Database Resources",
+    "content": "When you are in a state where the automatic or semi-automatic ways do not succeed, you will need to delete the resources manually. To do so, first you need to check if you can see the Private DNS zones and VNETs used by your db server in https://manage.azure.bmw.cloud/ and if you see them, delete them from there, if not delete them from https://portal.azure.com/. Steps to delete a VNET: . | Identify the VNET from Azure Database for PostgreSQL flexible server view resource in https://portal.azure.com/ -&gt; Networking tab -&gt; Virtual network section | Make sure the VNET in question is delegated to Microsoft.DBforPostgreSQL/flexibleServers. You can see that in VNET view screen from https://portal.azure.com/, Subnets tab | Edit VNET, set Delegation to None. | Delete the VNET from https://manage.azure.bmw.cloud/ -&gt; Network -&gt; Manage Existing Networks | If you cannot find the VNET in the above step, delete it directly from https://portal.azure.com/ | . If the VNET exists in https://manage.azure.bmw.cloud/ but it doesn’t exist in https://portal.azure.com/ you should open an ITSM ticket to public-cloud-framework:global . Steps to delete a Private DNS Zone: . | Identify the Private DNS Zone in https://portal.azure.com/ | Delete all Virtual network links from that Private DNS Zone from https://portal.azure.com/ vew screen | Delete the Private DNS Zone from https://manage.azure.bmw.cloud/ -&gt; DNS -&gt; Manage Private DNS Zones tab | If you cannot find the Private DNS Zone in the above step, delete it directly from https://portal.azure.com/ | . If the Private DNS Zone exists in https://manage.azure.bmw.cloud/ but it doesn’t exist in https://portal.azure.com/ you should open an ITSM ticket to public-cloud-framework:global . The remaining resources will be deleted from https://portal.azure.com/ . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/database-incident-recovery.html#manually-delete-database-resources",
+    "relUrl": "/cluster-handbook/database-incident-recovery.html#manually-delete-database-resources"
+  },"44": {
+    "doc": "Database Incident Recovery",
+    "title": "Database Incident Recovery",
+    "content": "Table of Contents . | Database Incident Recovery . | Restore Database Manually | Fix Terraform Locked State | Cleanup Resources When Destroy Is Interrupted | Manually Run Terraform Destroy From Local | Manually Delete Database Resources | . | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/database-incident-recovery.html",
+    "relUrl": "/cluster-handbook/database-incident-recovery.html"
+  },"45": {
+    "doc": "Decommission App",
+    "title": "Decommission App",
+    "content": "If you want to decommission a unity app you need to create a Decommission App issue. Change &lt;my-app-name&gt; with your app name and submit the issue. After submitting the issue an automated process of validation will start and in each step if something is wrong we will comment on the issue. Here are the validation steps, required to be able to decommission an app: . | App repository should exist | The app repository should have unity-app topic on it | The user that creates the issue and requests the app decommission has to be the app admin or an admin | . If the app meets all the expectations we will automatically start to decommission it. Following actions will happen: . | The app repository will be archived | Delete all secret, rolebinding, role and serviceaccount k8s objects from all environments. We do not touch the images | . After finishing, you will be informed by a comment on the issue and the issue will be closed and marked as resolved. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/decommissioning-app.html#decommission-app",
+    "relUrl": "/onboarding-handbook/decommissioning-app.html#decommission-app"
+  },"46": {
+    "doc": "Decommission App",
+    "title": "Restore Decommissioned App",
+    "content": "If you followed the steps from Decommission App and you want to restore it back, open a change request for the UNITY team (service: pdm-unity:global, service group: pdm-unity:devops:2nd) to recreate the cloud artifacts. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/decommissioning-app.html#restore-decommissioned-app",
+    "relUrl": "/onboarding-handbook/decommissioning-app.html#restore-decommissioned-app"
+  },"47": {
+    "doc": "Decommission App",
+    "title": "Decommission App",
+    "content": "Table of Contents . | Decommission App | Restore Decommissioned App | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/decommissioning-app.html",
+    "relUrl": "/onboarding-handbook/decommissioning-app.html"
+  },"48": {
+    "doc": "Diagnostics",
+    "title": "JVM",
+    "content": "The following sections describe diagnostic techniques for JVM based containers such as debugging and profiling. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/diagnostics.html#jvm",
+    "relUrl": "/onboarding-handbook/diagnostics.html#jvm"
+  },"49": {
+    "doc": "Diagnostics",
+    "title": "Remote Debugging",
+    "content": "To enable remote debugging, first prepare your application to expose the remote debugging port. Quarkus applications can be configured by setting the JAVA_OPTS_APPEND environment variable. Other JVM based applications may have different ways to configure the JVM argument. api: replicas: 1 env: JAVA_OPTS_APPEND: value: &gt; -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 . 💡 Scaling replicas to one, is a good idea to make sure you have only one pod running when debugging API calls via a REST interface. Otherwise, it is hard to know if the pod you are profiling will serve the request. There will be a performance impact on the running application. Debugging in the production environment is not recommended in general. When the app is prepared for debugging as described above, find the pod name . export \"POD=app-foo-api-5c484fd67c-9x9ll\" . and forward the JMX port locally by running: . kubectl port-forward $POD 5005:5005 . Next, switch to your IDE. The following instructions will show how to set up a remote debugging session in IntelliJ. To make sure that the Java classes are in sync with the source code in the IDE, it is recommended to checkout the git revision that is deployed in the container. Then create a new run configuration for remote debugging. and start it in debug mode. Then set a thread breakpoint, where you want to start debugging. 🚨 It is very important to select Thread, which will only stop the current thread. When stopping all threads (default breakpoint), the container cannot respond to readiness and liveness probes. This will result in termination of that “ unhealthy” pod and the debugging session will stop after a short period of time. To trigger the breakpoint, invoke the code by calling the REST endpoint, e.g. via Swagger UI. If everything worked, the IDE will stop at the breakpoint and the debugging session can begin. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/diagnostics.html#remote-debugging",
+    "relUrl": "/onboarding-handbook/diagnostics.html#remote-debugging"
+  },"50": {
+    "doc": "Diagnostics",
+    "title": "Java Management Extensions (JMX)",
+    "content": "JMX can be used to get detailed insight into a JVM. It includes observing the heap, garbage collection and many other JVM related data. To enable JMX, first prepare your application. Quarkus applications can be configured by setting the JAVA_OPTS_APPEND environment variable. Other JVM based applications may have different ways to configure the JVM argument. api: replicas: 1 env: JAVA_OPTS_APPEND: value: &gt; -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=10500 -Dcom.sun.management.jmxremote.rmi.port=10500 -Djava.rmi.server.hostname=127.0.0.1 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false . 💡 Scaling replicas to one, is a good idea to make sure you have only one pod running when profiling API calls via a REST interface in the int environment. Otherwise, it is hard to know if the pod you are profiling will serve the request. This does not apply to the prod environment, though. Profiling in prod is not recommended and if you need to do it make sure you have a full understanding of replicas and profiling. The instructions are based on the more general article Monitoring Quarkus JVM Mode With Cryostat. When the app is prepared as described above, find the pod name . export \"POD=app-foo-api-5c484fd67c-9x9ll\" . and forward the JMX port locally by running: . kubectl port-forward $POD 10500:10500 . 💡 You can also forward multiple ports if required: kubectl port-forward app-foo-api-5c484fd67c-9x9ll 8080:8080 10500:10500. There are several clients to connect to the JMX port. JMC and VisualVM are two alternatives described in the next sections. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/diagnostics.html#java-management-extensions-jmx",
+    "relUrl": "/onboarding-handbook/diagnostics.html#java-management-extensions-jmx"
+  },"51": {
+    "doc": "Diagnostics",
+    "title": "Java Mission Control (JMC)",
+    "content": "Install JMC and open it. Next, connect to the JMX connection in the JVM Browser: . Enter the mapped port: . and open the JMC Console: . Profiling can be done, using the Flight Recorder. By starting a new . After stopping it and opening the dump, the method profiling data can be inspected in the analysis result. Discussing details of Flight Recorder and JMC is beyond the scope of this section, consult the JDK Mission Control Docs for more information. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/diagnostics.html#java-mission-control-jmc",
+    "relUrl": "/onboarding-handbook/diagnostics.html#java-mission-control-jmc"
+  },"52": {
+    "doc": "Diagnostics",
+    "title": "VisualVM",
+    "content": "Install VisualVM locally. Before opening it, find out which JVM is in the container by running . kubectl exec $POD -- jinfo 1 . Look for something like java.home=/usr/lib/jvm/java-17-openjdk-17.0.6.0.10-3.el8_7.x86_64 which will tell you which JDK to use. Next, make sure you have the correct JDK available locally. Open the VisualVM with the correct JDK. JAVA_HOME=/path/to/java_home/ visualvm . 💡 It is important to use the same (major version and vendor) JVM locally for starting the Visual VM as used by the container application, otherwise you might see “not supported for this JVM” in Visual VM later on. Add a new JMX connection to localhost:10500. Open the new connection quarkus-run.jar (pid 1), which show some details already: . Checkout the Monitor and Threads tabs, which should give you some insight into your application. The Sampler tab might not be available, depending on the JVM (see JMC for an alternative). ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/diagnostics.html#visualvm",
+    "relUrl": "/onboarding-handbook/diagnostics.html#visualvm"
+  },"53": {
+    "doc": "Diagnostics",
+    "title": "Diagnostics",
+    "content": "Table of Contents . | JVM | Remote Debugging | Java Management Extensions (JMX) . | Java Mission Control (JMC) | VisualVM | . | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/diagnostics.html",
+    "relUrl": "/onboarding-handbook/diagnostics.html"
+  },"54": {
+    "doc": "Envoy",
+    "title": "Envoy",
+    "content": "Envoy proxy is used in UNITY to proxy all traffic going in and out of the app’s main container by following the service mesh pattern. The config for envoy is part of the unity-app Helm chart. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/envoy.html#envoy",
+    "relUrl": "/cluster-handbook/envoy.html#envoy"
+  },"55": {
+    "doc": "Envoy",
+    "title": "Architecture",
+    "content": "The basic idea of a service mesh is to offload some logic from the application’s container to a sidecar. Typically, authorization, TLS, content encoding, metrics and other things are handled by a sidecar. In UNITY, an app is deployed with some sidecars, one of them being an envoy proxy as shown in the diagram below: . graph TB subgraph UNITY subgraph pod envoy-- HTTP request --&gt;main main-- HTTP response --&gt;envoy envoy--&gt;authz end subgraph oauth2 [OAuth2 Proxy] end authz-- authentication --&gt;oauth2 end authz-- authorization --&gt;WebEAM oauth2-- authentication --&gt;WebEAM client-- HTTPS request --&gt;envoy envoy-- HTTPS response --&gt;client . The subsections below detail some aspects the envoy proxy is handling. Authorization . All traffic to a pod is handled by the envoy proxy. This is enforced via a NetworkPolicy. The network policy makes is part of the unity-app Helm chart and makes sure that only one port can receive traffic: . apiVersion: networking.k8s.io/v1 kind: NetworkPolicy metadata: # ... spec: egress: - { } ingress: - ports: - port: 8000 protocol: TCP podSelector: matchLabels: # ... policyTypes: - Ingress - Egress . Since the envoy proxy is listening to the exposed port, it can safely handle authorization. This is done via the External Authorization feature. Basically, envoy calls a webservice for every request to determine if a request is authorized. Only if the external authorization service is authorizing the request, it passed on upstream to the main container. In a UNITY app, the authorization service is implemented in the authz service, which runs as a second sidecar container. This sidecar can be configured for each UNITY app, individually. For example, an OAuth2 flow to WebEAM may be initiated for unauthorized requests or certain roles should be checked by the sidecar. Here is an example configuration: . apiVersion: v1beta1 name: foo deployments: ui: replicas: 1 container: image: app-foo-ui tag: latest auth: oauth2: enabled: true roles: b2x: any: - PMD - B2B_I . Content Encoding . For large request payloads, it makes sense to enable content-encoding, e.g. based on gzip. Instead of handling this in the application containers, the envoy proxy compresses and decompresses payloads. TLS Termination . TLS is terminated by the envoy proxy for inbound traffic as well as for outbound traffic. This means, an app’s main container does not need to enable TLS to serve requests and can simply serve traffic using simple HTTP without TLS. In addition, the app’s main container does not need to maintain a trust store to connect to other services in a secure way when calling services through the envoy proxy. All this is configured in the unity-app Helm chart. Read more about it in Securing Envoy. Accessing the Kubernetes API . It is possible to access the Kubernetes API from an application by sending a request to http://localhost:8011/&lt;path_to_resource&gt;. The reason for this is to provide information about the k8s cluster to the applications managed by the platform. The following request sent from the main container of an app returns the secret app-test from the namespace int: . curl http://localhost:8011/api/v1/namespaces/int/secrets/app-test . Note that in order to have access to a given resource, you must configure the necessary RBAC objects. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/envoy.html#architecture",
+    "relUrl": "/cluster-handbook/envoy.html#architecture"
+  },"56": {
+    "doc": "Envoy",
+    "title": "Testing Locally",
+    "content": "The simplest setup is to run envoy as docker container locally using docker or podman. Alternatively, it is also possible to install envoy directly on the machine by following the official docs. Since the config would require adjustments when running envoy outside a container, the following steps will show how to run envoy locally in a container only. To run the same config as in a pod of an app, set the config of an app to analyze by defining the following env variables. NAME=&lt;name of the app, e.g. services&gt; DEPLOYMENT=&lt;name of the deployment, e.g. api&gt; . Next, create a local tmp folder and dump the envoy config to a file. kubectl get secret app-$NAME-$DEPLOYMENT-tls -ojson | jq -r '.data[\"tls.crt\"] | @base64d' &gt; tls.crt kubectl get secret app-$NAME-$DEPLOYMENT-tls -ojson | jq -r '.data[\"tls.key\"] | @base64d' &gt; tls.key kubectl get secret app-$NAME-bmw-certificates -ojson | jq -r '.data[\"ca.crt\"] | @base64d' &gt; ca.crt kubectl get cm app-$NAME-$DEPLOYMENT-envoy-config -ojson | jq -r '.data[\"config.yaml\"]' &gt; config.yaml . Now run envoy (use docker instead of podman if you prefer docker). podman run \\ --mount type=bind,src=$(pwd)/ca.crt,target=/var/run/secrets/unity.bmwgroup.net/ca/ca.crt \\ --mount type=bind,src=$(pwd)/tls.crt,target=/var/run/secrets/unity.bmwgroup.net/tls/tls.crt \\ --mount type=bind,src=$(pwd)/tls.key,target=/var/run/secrets/unity.bmwgroup.net/tls/tls.key \\ --mount type=bind,src=$(pwd)/config.yaml,target=/var/run/secrets/unity.bmwgroup.net/envoy/config.yaml \\ --env ENVOY_UID=0 \\ -p 8000-8079:8000-8079 \\ docker.io/envoyproxy/envoy:v1.24.0 \\ -c /var/run/secrets/unity.bmwgroup.net/envoy/config.yaml \\ --log-level debug . Open the admin console in the local browser: http://localhost:8001. Or try with curl: . curl http://localhost:8002/oauth2-proxy/ping . This should respond with OK. Note that with this config, it is not possible to use envoy to proxy to a locally running app or the authz service. This would require to map the localhost ports into the container, which is not trivial. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/envoy.html#testing-locally",
+    "relUrl": "/cluster-handbook/envoy.html#testing-locally"
+  },"57": {
+    "doc": "Envoy",
+    "title": "Envoy",
+    "content": "Table of Contents . | Envoy . | Architecture . | Authorization | Content Encoding | TLS Termination | Accessing the Kubernetes API | . | Testing Locally | . | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/envoy.html",
+    "relUrl": "/cluster-handbook/envoy.html"
+  },"58": {
+    "doc": "External Services",
+    "title": "External Services",
+    "content": "UNITY integrates some services from the PDM domain. By providing a reverse proxy integration of these services, UNITY can handle authentication and authorization, which means calling a service from within a container is as simple as . curl http://localhost:8008/services/api/pip-vehicle/dev-model-ranges/v2:search -d '{}' . The base URL is http://localhost:8008/services/api. The next segment of the URL is the service which needs to be called (in this example, pip-vehicle). The rest of the URL is the exact path on the external service. The request body is sent to the external service as is. Here is a list of available services . | http://localhost:8008/services/api/pip-vehicle PIP Vehicle. For detailed information about the interface, please refer to the Swagger | http://localhost:8008/services/api/logic-services Logic Services (Logikdienste). For detailed information about the interface, please refer to the Swagger | http://localhost:8008/services/api/pdm-core. For more information about the interface, please refer to the offical documentation | http://localhost:8008/services/api/puk Check and Configuration Service (Prüf- und Konfigurationsdienst, PUK). For detailed information about the interface, please refer to the Swagger | http://localhost:8008/services/api/hsa HSA (100% Sonderausstattung). For detailed information about the interface, please refer to the Swagger | http://localhost:8008/services/api/chars. For more information about the interface, please refer to the offical documentation | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/external-services.html#external-services",
+    "relUrl": "/onboarding-handbook/external-services.html#external-services"
+  },"59": {
+    "doc": "External Services",
+    "title": "Architecture",
+    "content": "When integrating your app with an external service, there are several options detailed below. Make sure you understand the implication of these two architectures, as they have a huge impact on information protection and user role requirements. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/external-services.html#architecture",
+    "relUrl": "/onboarding-handbook/external-services.html#architecture"
+  },"60": {
+    "doc": "External Services",
+    "title": "Back-End Proxy (preferred)",
+    "content": "The preferred way of using app in your my-app-ui is to call your own back-end: my-app-api. This back-end then calls the unity-services endpoint. graph LR subgraph UNITY my-app-api&lt;----&gt;unity-services end subgraph Client my-app-ui&lt;----&gt;my-app-api end . The two subsections below detail two alternatives to handle authentication and information protection. Machine to Machine Authentication (preferred) . graph LR subgraph UNITY my-app-api&lt;-- machine to machine token --&gt;unity-services end subgraph Client my-app-ui&lt;--user token--&gt;my-app-api end . By default, UNITY will make sure that your back-end is authenticated and has some default privileges on the API call. This means you can call any external service without the need for creating authorization tokens. The response, received from any service, is sent as is to your back-end. You are responsible for filtering that data according to the information protection needs before sending data toe my-app-ui and presenting it to the user. User Token Authentication . graph LR subgraph UNITY my-app-api&lt;--user token--&gt;unity-services end subgraph Client my-app-ui&lt;--user token--&gt;my-app-api end . Instead of letting UNITY inject some machine to machine tokens, you can also pass the users token to a UNITY service. In this case, the user’s token is passed through to the external system. Note that the external system must be able to accept end user tokens and must be able to evaluate the user’s roles. The up-side of this approach is, that data received from the external system may already filter according to the users permissions if supported by the external services. On the other hand, it can be hard to track down issues with missing roles on the user’s end. Always expect that a call may fail with 401 Unauthorized or 403 Forbidden when passing on a user’s token. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/external-services.html#back-end-proxy-preferred",
+    "relUrl": "/onboarding-handbook/external-services.html#back-end-proxy-preferred"
+  },"61": {
+    "doc": "External Services",
+    "title": "Direct UI integration",
+    "content": "graph LR subgraph UNITY my-app-api unity-services end subgraph Client my-app-ui&lt;--user token--&gt;unity-services end . In this approach, the unity-servivces are called directly from my-app-ui on the user’s machine. The user’s token will be passed directly to the external service. Note that the external system must be able to accept end user tokens and must be able to evaluate the user’s roles. Data received from the external system may already filter according to the user’s permissions if supported by the external services. Otherwise, this approach will not work. However, it can be hard to track down issues with missing roles on the users end. Always expect that a call may fail with 401 Unauthorized or 403 Forbidden when passing on a users token. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/external-services.html#direct-ui-integration",
+    "relUrl": "/onboarding-handbook/external-services.html#direct-ui-integration"
+  },"62": {
+    "doc": "External Services",
+    "title": "Developing Locally",
+    "content": "The following sections detail, how one can call external services when developing locally using different technologies. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/external-services.html#developing-locally",
+    "relUrl": "/onboarding-handbook/external-services.html#developing-locally"
+  },"63": {
+    "doc": "External Services",
+    "title": "Curl",
+    "content": "External services can be called via a direct link provided by UNITY as shown in the example below: . curl https://unity-int.bmwgroup.net/services/api/pip-vehicle/dev-model-ranges/v2:search -d '{}' -H 'Authorization: Bearer &lt;token&gt;' . The base URL (on int) is https://unity-int.bmwgroup.net/services/api/. The next segment of the URL is the service which needs to be called (in this example, pip-vehicle). The rest of the URL is the exact path on the external service. The request body is sent to the external service as is. However, in this case a valid Authorization header needs to be set (for example a WEN token where the user has the necessary roles if the service uses WEN). If the header is set, it will be directly passed to the service, without UNITY making any changes to the header. Alternatively, a service account token can be used for authentication, which can be obtained via the store-secrets workflow which is generated together with the application. In addition, the custom header Unity-Authorization-Type: Kubernetes-Service-Account must be set as shown below. curl https://unity-int.bmwgroup.net/services/api/pip-vehicle/dev-model-ranges/v2:search -d '{}' -H 'Authorization: Bearer &lt;sa-token&gt;' -H 'Unity-Authorization-Type: Kubernetes-Service-Account' . In this case, UNITY checks that the service account token is valid and will change the Authorization header to call the external service. This is the most convenient way to call an external service. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/external-services.html#curl",
+    "relUrl": "/onboarding-handbook/external-services.html#curl"
+  },"64": {
+    "doc": "External Services",
+    "title": "Quarkus",
+    "content": "When developing a Quarkus application, it would be useful to be able to call the external services when developing applications. In order to do that, the service account token is needed which can be obtained via the store-secrets workflow. The following section contains a step-by-step guide to implement a service integration using PIP Vehicle as example following the machine to machine authentication approach. REST Client . Add the maven dependencies for the rest client to the pom.xml, as also described in USING THE REST CLIENT. &lt;dependencies&gt; &lt;dependency&gt; &lt;groupId&gt;io.quarkus&lt;/groupId&gt; &lt;artifactId&gt;quarkus-rest-client-reactive&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;io.quarkus&lt;/groupId&gt; &lt;artifactId&gt;quarkus-rest-client-reactive-jackson&lt;/artifactId&gt; &lt;/dependency&gt; &lt;/dependencies&gt; . The quarkus-rest-client-reactive-jackson dependency ensures that records are automatically mapped to JSON by the Jackson framework. Next create the REST client interface. @RegisterRestClient(configKey = \"unity-services\") @Consumes({MediaType.APPLICATION_JSON}) @Produces({MediaType.APPLICATION_JSON}) @Path(\"/pip-vehicle/\") public interface PipVehicle { @POST @Path(\"/dev-model-ranges/v2:search\") SearchResult&lt;DevModelRange&gt; searchDevModelRanges(DevModelRangeSearch request); record SearchResult&lt;T&gt;(List&lt;T&gt; result) { } record DevModelRange(String devModelRangeCode) { } record DevModelRangeSearch(List&lt;String&gt; devModelRangeCodes) { } } . The application.properties should be extended by a few properties for local development . quarkus.rest-client.unity-services.url=http://localhost:8008/services/api %dev.quarkus.rest-client.unity-services.url=https://unity-int.bmwgroup.net/services/api %dev.quarkus.tls.trust-all=true %dev.quarkus.log.category.\"org.apache.http\".level=DEBUG . | rest-client.unity-services.url is the base URL of the service, which will be used by the client annotated with @RegisterRestClient(configKey = \"unity-services\"). | tls.trust-all=true can be safely set on dev, to ignore certificate validation. In UNITY, certificates will properly be validated by the sidecar. | log.category.\"org.apache.http\".level=DEBUG this optional setting can be helpful to see requests in the logs. | . REST Resource . To use the client, create a simple rest resource, calling the service: . @Path(\"/v1/\") public class PipResource { @Inject @RestClient PipVehicle pipVehicle; @GET @Path(\"pip/{code}\") @Produces(MediaType.APPLICATION_JSON) public CompletionStage&lt;PipVehicle.SearchResult&lt;PipVehicle.DevModelRange&gt;&gt; devModelRange( @Parameter(hidden = true) @HeaderParam(\"Unity-UserName\") final String userName, @PathParam(\"code\") String code ) { return pipVehicle.searchDevModelRanges(new PipVehicle.DevModelRangeSearch(List.of(code))); } } . Testing Locally . In order to test the service integration locally, a custom client headers factory needs to be created. @ApplicationScoped public class CustomAuthorizationHeaderFactory extends ReactiveClientHeadersFactory { @ConfigProperty(name = \"kubernetes-token\") Optional&lt;String&gt; saToken; @Override public Uni&lt;MultivaluedMap&lt;String, String&gt;&gt; getHeaders(MultivaluedMap&lt;String, String&gt; incomingHeaders, MultivaluedMap&lt;String, String&gt; clientOutgoingHeaders) { return Uni.createFrom().completionStage(() -&gt; CompletableFuture.supplyAsync(() -&gt; { if (ConfigUtils.isProfileActive(\"dev\")) { clientOutgoingHeaders.put(AUTHORIZATION, List.of(\"Bearer \" + saToken.orElseThrow( () -&gt; new MissingResourceException(\"Kubernetes service account token was not found\", String.class.getName(), \"kubernetes-token\")))); clientOutgoingHeaders.put(\"Unity-Authorization-Type\", List.of(\"Kubernetes-Service-Account\")); } return clientOutgoingHeaders; })); } } . This factory sets the Authorization and Unity-Authorization-Type headers on every request, if the dev Quarkus profile is active. To use the factory in the REST client, annotate it with: . @RegisterClientHeaders(CustomAuthorizationHeaderFactory.class) @RegisterRestClient(configKey = \"unity-services\") @Consumes({MediaType.APPLICATION_JSON}) @Produces({MediaType.APPLICATION_JSON}) @Path(\"/pip-vehicle/\") public interface PipVehicle { // ... } . When starting Quarkus locally the KUBERNETES_TOKEN environment variable needs to be set. In IntelliJ, this can be set in the run configuration under Runner &gt; Environment variables. The token can be downloaded after running the store-secrets action in your repository as described here . Copy the token from the secrets.kdbx to the KUBERNETES_TOKEN environment variable. ⚠️ Never add the token to your source code, this is confidential information, which should not be shared in plain text. ⚠️ The token may be updated by the UNITY platform at any time. So if the token is not valid anymore after some time, just download a new one. After the environment was configured correctly, start Quarkus and call the endpoint: . curl -X GET \"http://localhost:8080/my-app/api/v1/pip/G20\" . This should result in the following JSON response: . { \"result\": [ { \"devModelRangeCode\": \"G20\" } ] } . If the response is not properly JSON formatted, make sure the following dependency is in your pom.xml, as this takes care of mapping the response record to JSON. &lt;dependency&gt; &lt;groupId&gt;io.quarkus&lt;/groupId&gt; &lt;artifactId&gt;quarkus-resteasy-reactive-jackson&lt;/artifactId&gt; &lt;/dependency&gt; . Deploying to Int . Next, deploy your code to int and enjoy UNITY 🚀. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/external-services.html#quarkus",
+    "relUrl": "/onboarding-handbook/external-services.html#quarkus"
+  },"65": {
+    "doc": "External Services",
+    "title": "External Services",
+    "content": "Table of Contents . | External Services | Architecture . | Back-End Proxy (preferred) . | Machine to Machine Authentication (preferred) | User Token Authentication | . | Direct UI integration | . | Developing Locally . | Curl | Quarkus . | REST Client | REST Resource | Testing Locally | Deploying to Int | . | . | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/external-services.html",
+    "relUrl": "/onboarding-handbook/external-services.html"
+  },"66": {
+    "doc": "Getting Started",
+    "title": "Getting Started",
+    "content": "After an app was created through the New App workflow, a repository with source code was generated. In addition, workflows that build and push docker images to the GitHub container registry have been created, if you chose to create an Angular and or Quarkus stub in the “New App” issue template. These default workflows are just a starting point and may be customized later on. After the first images are build from the source code, they are automatically deployed, based on the configuration inside the unity-app.*.yaml files. Any change to the source code or unity-app.*.yaml files in the main branch of the repository will be rolled out automatically. The diagrams below give a short overview. Source code changes are handled by the ci-* workflows, there is one of those workflows per deployment. The diagram below shows a workflow for the api deployment. Changes to an unity-app.*.yaml file are handled by the config-change workflow. If there are only changes to the unity-app.int.yaml file, only the first workflow would be executed. Looking at the workflow files and logs of these workflows may help to get a deeper understanding of the setup. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/getting-started.html#getting-started",
+    "relUrl": "/onboarding-handbook/getting-started.html#getting-started"
+  },"67": {
+    "doc": "Getting Started",
+    "title": "Getting Started",
+    "content": "Table of Contents . | Getting Started | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/getting-started.html",
+    "relUrl": "/onboarding-handbook/getting-started.html"
+  },"68": {
+    "doc": "HTTP Headers",
+    "title": "HTTP Headers",
+    "content": " ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/http-headers.html#http-headers",
+    "relUrl": "/onboarding-handbook/http-headers.html#http-headers"
+  },"69": {
+    "doc": "HTTP Headers",
+    "title": "Default HTTP Headers",
+    "content": "The following HTTP response headers will be set by default by the UNITY platform: . X-Content-Type-Options: 'nosniff' X-Frame-Options: 'deny' Content-Security-Policy: frame-ancestors 'self'; form-action 'self'; object-src 'none'; . Note that some additional default headers are set by the Nginx Ingress Controller, which can not be overwritten, e.g Strict-Transport-Security: 'max-age=15724800; includeSubDomains'). For more information, please refer to the default configuration values of the ingress-nginx. ⚠️ The default setting for Content-Security-Policy does not provide maximum security, because the most secure setting (default-src 'self') breaks frameworks, such as Swagger UI and Angular. Read more about it in Security. X-XSS-Protection was a recommended security related header in the past. As it is deprecated, this header is not set anymore. Please set a secure Content-Security-Policy instead. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/http-headers.html#default-http-headers",
+    "relUrl": "/onboarding-handbook/http-headers.html#default-http-headers"
+  },"70": {
+    "doc": "HTTP Headers",
+    "title": "Customizing the HTTP Headers",
+    "content": "It is possible to edit or unset the default response headers or to set custom response headers. This can be achieved by modifying the unity-app.*.yaml files. Unsetting a default header can be done by setting the value for the given header to null. The following example sets the response header Foo, unsets the default X-Frame-Options header and sets the header Baz with two different values: . deployments: ui: headers: response: add: X-Frame-Options: null Foo: Bar Baz: - Qux - Fred . Note that the headers will be added, regardless of being set by the app’s container. That means, if you set the custom header Foo: Bar in the app’s container and Foo: Baz in the unity-app.*.yaml, the response will have both values: . Foo: Bar Foo: Baz . This can be fixed by removing the header first, essentially replacing a header. deployments: ui: headers: response: add: X-Frame-Options: null Foo: Bar remove: - Foo . Note that header removal is case-insensitive. Default headers can be set from the application container when unset (e.g. X-Frame-Options: null). To make sure this header is never set at all, add it also to the remove section. deployments: ui: headers: response: add: X-Frame-Options: null remove: - X-Frame-Options . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/http-headers.html#customizing-the-http-headers",
+    "relUrl": "/onboarding-handbook/http-headers.html#customizing-the-http-headers"
+  },"71": {
+    "doc": "HTTP Headers",
+    "title": "HTTP Headers",
+    "content": "Table of Contents . | HTTP Headers . | Default HTTP Headers | Customizing the HTTP Headers | . | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/http-headers.html",
+    "relUrl": "/onboarding-handbook/http-headers.html"
+  },"72": {
+    "doc": "Incident Recovery",
+    "title": "Incident Recovery",
+    "content": "The sections below describe certain incidents and how to recover from them. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/incident-recovery.html#incident-recovery",
+    "relUrl": "/cluster-handbook/incident-recovery.html#incident-recovery"
+  },"73": {
+    "doc": "Incident Recovery",
+    "title": "Fix Broken Service Account Token",
+    "content": "It may happen that the service account token stored in GHE secrets gets invalid or the user deletes it by accident. This can be fixed by running the recreate-app-service-account workflow, which recreates the token on the k8s cluster and stores it in the GHE secrets for the selected environment and repos matching the specified regular expression. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/incident-recovery.html#fix-broken-service-account-token",
+    "relUrl": "/cluster-handbook/incident-recovery.html#fix-broken-service-account-token"
+  },"74": {
+    "doc": "Incident Recovery",
+    "title": "Fix Missing or Broken Master Key",
+    "content": "To encrypt the secrets in an automated way, the master key must be stored in GHE. This (or fixing a broken master key) can be achieved by running the sync-master-keys-from-k8s-to-gh workflow, which stores the master key in GHE for the selected environment and repos matching the specified regular expression as CRYPT_MASTER_KEY (or updates the existing one if overwrite is set to true). ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/incident-recovery.html#fix-missing-or-broken-master-key",
+    "relUrl": "/cluster-handbook/incident-recovery.html#fix-missing-or-broken-master-key"
+  },"75": {
+    "doc": "Incident Recovery",
+    "title": "Fix Crashing UNITY Operator",
+    "content": "In case, the UNITY operator is in a crashing looping state, because one app is configured such that it breaks the operator (which should not happen). To make sure the UNITY operator gets into normal state, one can exclude an app (causing the issue) from being handled by the unity-operator. To do so, annotate the app’s secret with unity-operator.unity.bmwgroup.net/disabled: 'true'. This can be done by running . kubectl annotate secret app-foo --overwrite unity-operator.unity.bmwgroup.net/disabled=true . ⚠️ After the root cause of the issue was solved, the annotation must be set back to false manually. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/incident-recovery.html#fix-crashing-unity-operator",
+    "relUrl": "/cluster-handbook/incident-recovery.html#fix-crashing-unity-operator"
+  },"76": {
+    "doc": "Incident Recovery",
+    "title": "Automatic Alerts",
+    "content": "There are several automatic alerts which result in both Teams messages on the configured channels and ITSM incidents being created. The situations which result in automatic alerts are the following: . | when one of the platform components is not working on either INT or PROD (unity-operator, oauth2-proxy, grafana, grafana-tempo). In this case, the UNITY team needs to analyze the problem and come up with a solution (a quick temporary fix to bring the component back into a running state and, if necessary, a follow-up fix in the code to prevent the problem from occurring again) . | when an application is not working on PROD. In this case, the UNITY team needs to analyze the problem and determine if it is caused by the platform or by the application. In case the problem is caused by the platform, the same steps which are done in case platform components are done, need to be followed here. In case the problem is within the application, it needs to be informed (via an incident). | . The service group corresponding to an application can be found in Connect IT, under the tab CMDB Information (after searching for the application, by application ID) . Known Issues . The following alert is triggered because the total memory limit is higher than the available memory in the cluster. This is not be a problem unless the applications are simultaneously requesting more memory than the property set in container.resources.requests in their unity-app.*.yaml, which is highly unlikely (for more information see the official documentation). If this still happens, the problem can be fixed by raising the container.resources.requests to a value which is closer to the container.resources.limits, which should trigger the creation of new nodes by the autoscaler. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/incident-recovery.html#automatic-alerts",
+    "relUrl": "/cluster-handbook/incident-recovery.html#automatic-alerts"
+  },"77": {
+    "doc": "Incident Recovery",
+    "title": "Incident Recovery",
+    "content": "Table of Contents . | Incident Recovery . | Fix Broken Service Account Token | Fix Missing or Broken Master Key | Fix Crashing UNITY Operator | Automatic Alerts . | Known Issues | . | . | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/incident-recovery.html",
+    "relUrl": "/cluster-handbook/incident-recovery.html"
+  },"78": {
+    "doc": "Onboarding Handbook",
+    "title": "Onboarding Handbook",
+    "content": "The Onboarding Handbook is for the app developer to support deploying an app on the WADTFY platform. | Getting Started with an app | UNITY App Yaml to configure UNITY features specifically for a UNITY app | Connect IT document your app in Connect IT | App Configuration of a UNITY app on different environments | Authentication and Authorization to secure access to a UNITY app | Resources requested by an app for compute and memory | URLs generated by UNITY for a UNITY app | Certificates, TLS and calls to external services | Security topics such as vulnerability scanning on the app’s code | Telemetry data such as logs, metrics and tracing of UNITY applications. | External services called from UNITY applications. | HTTP Headers configure HTTP headers. | Maven Packages maven config for GHE packages or BMW nexus. | Kubernetes interacting with the application’s running containers. | Diagnostics debug and profile to troubleshoot UNITY applications. | PostgreSQL Flexible Server provision a PostgreSQL database server. | Decommission App decommission UNITY application | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/#onboarding-handbook",
+    "relUrl": "/onboarding-handbook/#onboarding-handbook"
+  },"79": {
+    "doc": "Onboarding Handbook",
+    "title": "Onboarding Handbook",
+    "content": " ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/",
+    "relUrl": "/onboarding-handbook/"
+  },"80": {
+    "doc": "Cluster Handbook",
+    "title": "Cluster Handbook",
+    "content": "The Cluster Handbook should help the WADTFY team to understand the architecture, development and operation of the platform. It is open source, though, so everybody may read it to get a deeper understanding of the platform. | Getting Started with an app | UNITY App Yaml to configure UNITY features specifically for a UNITY app | Connect IT document your app in Connect IT | App Configuration of a UNITY app on different environments | Authentication and Authorization to secure access to a UNITY app | Resources requested by an app for compute and memory | URLs generated by UNITY for a UNITY app | Kubernetes interacting with the application’s running containers. | Diagnostics debug and profile to troubleshoot UNITY applications. | PostgreSQL Flexible Server provision a PostgreSQL database server. | Decommission App decommission UNITY application | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/#cluster-handbook",
+    "relUrl": "/cluster-handbook/#cluster-handbook"
+  },"81": {
+    "doc": "Cluster Handbook",
+    "title": "Cluster Handbook",
+    "content": " ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/",
+    "relUrl": "/cluster-handbook/"
+  },"82": {
+    "doc": "Home",
+    "title": "WADTFY",
+    "content": ". ",
+    "url": "/WADTFY/wadtfy-docs/#wadtfy",
+    "relUrl": "/#wadtfy"
+  },"83": {
+    "doc": "Home",
+    "title": "Table of Contents",
+    "content": ". | Onboarding Handbook if you are an app developer, looking for help on deploying an app on the WADTFY platform, this is for you. | Cluster Handbook if you are part of the WADTFY platform DevOps team, or you just want to get a deeper understanding of the platform, this is for you. | . ",
+    "url": "/WADTFY/wadtfy-docs/#table-of-contents",
+    "relUrl": "/#table-of-contents"
+  },"84": {
+    "doc": "Home",
+    "title": "Home",
+    "content": " ",
+    "url": "/WADTFY/wadtfy-docs/",
+    "relUrl": "/"
+  },"85": {
+    "doc": "Kubernetes",
+    "title": "Kubernetes",
+    "content": "All your containers run in a Kubernetes cluster, maintained by the UNITY team. The following sections describe how you can get limited access to the cluster for various troubleshooting scenarios. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/kubernetes.html#kubernetes",
+    "relUrl": "/onboarding-handbook/kubernetes.html#kubernetes"
+  },"86": {
+    "doc": "Kubernetes",
+    "title": "kubectl",
+    "content": "To access the Kubernetes cluster, it is recommended to use kubectl. Follow the instructions to install kubectl for your operating system (Linux, MacOS, Windows). Make sure you can run the following command locally. kubectl version --client=true . The steps, to access the Kubernetes cluster are detailed next. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/kubernetes.html#kubectl",
+    "relUrl": "/onboarding-handbook/kubernetes.html#kubectl"
+  },"87": {
+    "doc": "Kubernetes",
+    "title": "Authenticate as Service Account",
+    "content": "To be able to interact with the cluster’s API server a token plus some additional config is required. In UNITY, for every app there is a service account, which is a technical identify, that can be used to interact with the cluster. The token is securely stored in GitHub Enterprise as repository secret. Get Service Account Token . Downloading the token is possible using the store-secrets workflow in your app’s repository. After the action has completed successfully, the secrets.kdbx file can be downloaded from the Summary &gt; Artifacts section. This file can be opened later with the password provided when starting the workflow, and it will contain the secrets from the GitHub repository. 🚨 Note that the token may be rolled (new token is generated) by UNITY from time to time. Extracting the service account token is meant for development purposes and must not be used for external service interaction. kubectl Setup . The secrets.kdbx contain three environment specific secrets to interact with the Kubernetes cluster. Export all three environment variables in a shell (fill in the actual values from the secrets.kdbx). export KUBERNETES_HOST=... export KUBERNETES_NAMESPACE=... export KUBERNETES_TOKEN=... Now you can interact with the clusters API server. Validate, by running: . kubectl --server \"https://$KUBERNETES_HOST\" --namespace \"$KUBERNETES_NAMESPACE\" --token \"$KUBERNETES_TOKEN\" version --client=false . This should output something like: . WARNING: This version information is deprecated and will be replaced with the output from kubectl version --short. Use --output=yaml|json to get the full version. Client Version: version.Info{Major:\"1\", Minor:\"26\", GitVersion:\"v1.26.1\", GitCommit:\"8f94681cd294aa8cfd3407b8191f6c70214973a4\", GitTreeState:\"clean\", BuildDate:\"2023-01-18T15:51:24Z\", GoVersion:\"go1.19.5\", Compiler:\"gc\", Platform:\"darwin/amd64\"} Kustomize Version: v4.5.7 Server Version: version.Info{Major:\"1\", Minor:\"24\", GitVersion:\"v1.24.10\", GitCommit:\"5c1d2d4295f9b4eb12bfbf6429fdf989f2ca8a02\", GitTreeState:\"clean\", BuildDate:\"2023-01-27T22:54:20Z\", GoVersion:\"go1.19.5\", Compiler:\"gc\", Platform:\"linux/amd64\"} WARNING: version difference between client (1.26) and server (1.24) exceeds the supported minor version skew of +/-1 . The last WARNIN: Gversion difference between client (1.26) and server (1.24)... indicates that the current version of kubectl may have some incompatibility with the server API. You can go back and install the kubectl version that matches the cluster version. However, since the kubectl features that will be used are very basic, it is likely that picking a newer version of kubectl will not cause any problems. For more information about kubectl consult the official documentation. KUBECONFIG (Optional) . As the example call showed, it is possible to pass KUBERNETES_HOST, KUBERNETES_NAMESPACE, and KUBERNETES_TOKEN on every kubectl invocation. This is a bit cumbersome, thought, when running a lot of kubectl commands. To make running kubectl more convenient, set a kubeconfig up as follows: . export \"KUBECONFIG=~/.kube/config-$KUBERNETES_NAMESPACE\" kubectl config set-credentials sa --token \"$KUBERNETES_TOKEN\" kubectl config set-cluster \"$KUBERNETES_NAMESPACE\" --server \"https://$KUBERNETES_HOST\" kubectl config set-context \"$KUBERNETES_NAMESPACE\" --user sa --namespace \"$KUBERNETES_NAMESPACE\" --cluster \"$KUBERNETES_NAMESPACE\" kubectl config use-context \"$KUBERNETES_NAMESPACE\" . As long as the KUBECONFIG environment variable is set, kubectl can be used without specifying --server ... on each call. Test the setup by running . kubectl version --client=false . 🚨 Note that the token is now stored inside a file (the path KUBECONFIG points to). To make sure the secret token is not leaked, delete the file after you are done with kubectl calls. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/kubernetes.html#authenticate-as-service-account",
+    "relUrl": "/onboarding-handbook/kubernetes.html#authenticate-as-service-account"
+  },"88": {
+    "doc": "Kubernetes",
+    "title": "App Configuration",
+    "content": "Assuming you have set the KUBECONFIG you can now inspect the current configuration of your app app-foo as follows: . kubectl get secret app-foo -oyaml . You can even modify the secret directly using kubectl edited secret app-foo, but then you should really know what you are doing, as changes will be directly reflected into your apps deployments. A misconfiguration may result in an unwanted downtime. Note that the workflows in your app’s repository make use of the deploy-unity-app action, which uses kubectl and the service account to sync the unity-app.*.yaml into a Kubernetes secret. Additionally, it checks if the image and tag/sha256 combination exists and if they correspond to each other. If sha256 parameter is not present it is added in the kubernetes secret. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/kubernetes.html#app-configuration",
+    "relUrl": "/onboarding-handbook/kubernetes.html#app-configuration"
+  },"89": {
+    "doc": "Kubernetes",
+    "title": "Deployments",
+    "content": "Assuming you have set the KUBECONFIG you can now inspect deployments for your app app-foo as follows: . kubectl get deployment app-foo-api -oyaml kubectl get deployment app-foo-ui -oyaml . Note that the names of the deployments are concatenated from the app-name app-test and the deployment names api, ui from your unity-app.*.yaml. deployments: ui: # ... api: # ... You can also find the names of the deployments on the dashboards in Grafana. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/kubernetes.html#deployments",
+    "relUrl": "/onboarding-handbook/kubernetes.html#deployments"
+  },"90": {
+    "doc": "Kubernetes",
+    "title": "Inspect Containers and Pods",
+    "content": "Your containers run in pods, which is a Kubernetes concept. To interact with a running container, you need to interact with a pod. Currently, it is not possible to find the pod names using kubectl . To find the current pod names check the dashboards in Grafana. For example the resource dashboards show the pod names: . In the example above, the only pod that is currently available in the cluster for interactive inspection is app-test-api-595459f74c-8vmdk. The other two pods do not run anymore, as can be seen from the chart. When knowing the pod name, various operations can be performed to help troubleshooting . Remote Shell . To open a remote shell in a running container follow the example below: . kubectl exec -it app-test-api-595459f74c-8vmdk -- sh . This opens a remote shell (like ssh) which allows to inspect the internal state of the container. E.g. list files in a temporary directly or show process info of the JVM. sh-4.4$ jinfo 1 Java System Properties: #Tue May 30 11:52:15 GMT 2023 java.specification.version=17 # ... VM Flags: -XX:AdaptiveSizePolicyWeight=90 -XX:CICompilerCount=2 -XX:+ExitOnOutOfMemoryError -XX:GCTimeRatio=4 -XX:InitialHeapSize=33554432 -XX:MaxHeapFreeRatio=20 -XX:MaxHeapSize=134217728 -XX:MaxNewSize=44564480 -XX:MinHeapDeltaBytes=524288 -XX:MinHeapFreeRatio=10 -XX:MinHeapSize=33554432 -XX:NewSize=11010048 -XX:NonNMethodCodeHeapSize=5826188 -XX:NonProfiledCodeHeapSize=122916026 -XX:OldSize=22544384 -XX:ProfiledCodeHeapSize=122916026 -XX:ReservedCodeCacheSize=251658240 -XX:+SegmentedCodeCache -XX:SoftMaxHeapSize=134217728 -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseParallelGC VM Arguments: jvm_args: -Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Xms32m -Xmx128m -XX:+UseParallelGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+ExitOnOutOfMemoryError java_command: /deployments/quarkus-run.jar java_class_path (initial): /deployments/quarkus-run.jar Launcher Type: SUN_STANDARD . 🚨 You can even modify files and configuration, but keep in mind that all changes will be lost after the next pod is started. This is for troubleshooting and experiments only. Port-Forwarding . To forward a port from a pod to your local machine you can map ports as shown below: . kubectl port-forward app-foo-api-5c484fd67c-9x9ll 8080:8080 . If your app exposes that port to serve http requests, you should be able to open e.g. the Swagger UI page locally over the mapped port by opening http://localhost:8080/test/api/swagger-ui (after adjusting the URL). ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/kubernetes.html#inspect-containers-and-pods",
+    "relUrl": "/onboarding-handbook/kubernetes.html#inspect-containers-and-pods"
+  },"91": {
+    "doc": "Kubernetes",
+    "title": "Inspect Events",
+    "content": "Sometimes it is useful to inspect the events from the Kubernetes cluster. The application service account token is authorized to list the events from the cluster: . kubectl get events . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/kubernetes.html#inspect-events",
+    "relUrl": "/onboarding-handbook/kubernetes.html#inspect-events"
+  },"92": {
+    "doc": "Kubernetes",
+    "title": "Container Runtime (Docker)",
+    "content": "At the core of the Kubernetes cluster is a container runtime. Each Kubernetes cluster may have a different container runtime and configuration at its heart. Most settings are security related, and sometimes it can be hard to troubleshoot why a specific container is not running as intended. Here are a few guidelines on preparing and testing containers to run in UNITY: . | containers must not require privileged users to run e.g. root user and sudo commands will not work) Reference: Force the running image to run as a non-root user to ensure least privilege | containers should run as user 10000 in group 10000 See UID (User Identifier) and GID (Group Identifier) in Linux for a quick explanation. A specific user, with uid &gt; 10000, to run the container may be specified via runAsUser in the unity-app.*.yaml. Reference: Run as a high-UID user to avoid conflicts with the host’s user table | By default, all capabilities are dropped. See An Introduction to Linux Capabilities for a quick overview. Specific capabilities, such as NET_BIND_SERVICE may be added via the unity-app.*.yaml. Reference: Drop all capabilities and add only those required to reduce syscall attack surface | The root filesystem of a container will be readonly. Temporary directories that the container requires write permission to should be specified as tmpDirs in the unity-app.*.yaml. Reference: An immutable root filesystem can prevent malicious binaries being added to PATH and increase attack cost | . To test a container locally, the following docker command gets quite close to the specifications above: . docker run --read-only --cap-drop ALL --user 10000:10000 my-image . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/kubernetes.html#container-runtime-docker",
+    "relUrl": "/onboarding-handbook/kubernetes.html#container-runtime-docker"
+  },"93": {
+    "doc": "Kubernetes",
+    "title": "Kubernetes",
+    "content": "Table of Contents . | Kubernetes . | kubectl | Authenticate as Service Account . | Get Service Account Token | kubectl Setup . | KUBECONFIG (Optional) | . | . | App Configuration | Deployments | Inspect Containers and Pods . | Remote Shell | Port-Forwarding | . | Inspect Events | Container Runtime (Docker) | . | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/kubernetes.html",
+    "relUrl": "/onboarding-handbook/kubernetes.html"
+  },"94": {
+    "doc": "Kubernetes",
+    "title": "Kubernetes",
+    "content": " ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/kubernetes.html#kubernetes",
+    "relUrl": "/cluster-handbook/kubernetes.html#kubernetes"
+  },"95": {
+    "doc": "Kubernetes",
+    "title": "Architecture",
+    "content": "The following diagram gives an overview on the integration of GitHub Enterprise and Kubernetes architecture. graph LR subgraph K8s Cluster subgraph unity-operator-deployment [unity-operator] end subgraph schema-deployment [schema] end subgraph app-foo-secret [app-foo secret] end subgraph app-bar-secret [app-bar secret] end subgraph app-foo-ui-deployment [app-foo-ui] end subgraph app-foo-api-deployment [app-foo-api] end subgraph app-bar-ui-deployment [app-bar-ui] end subgraph app-bar-api-deployment [app-bar-api] end end subgraph GitHub Enterprise subgraph schema-repo [schema repository] end subgraph unity-helm-charts-repo [unity-helm-charts repository] end subgraph unity-operator-repo [unity-operator repository] end subgraph unity-chart-repo [unity-chart repository] end subgraph app-foo-repo [app-foo repository] end subgraph app-bar-repo [app-bar repository] end subgraph container-registry subgraph unity-app-chart [unity-app chart] end subgraph schema-image [schema image] end subgraph unity-operator-image [unity-operator image] end subgraph app-foo-ui-image [app-foo-ui image] end subgraph app-foo-api-image [app-foo-api image] end subgraph app-bar-ui-image [app-bar-ui image] end subgraph app-bar-api-image [app-bar-api image] end end end unity-helm-charts-repo-- push --&gt;unity-app-chart schema-repo-- push --&gt;schema-image unity-operator-repo-- push --&gt;unity-operator-image app-foo-repo-- push --&gt;app-foo-ui-image app-foo-repo-- push --&gt;app-foo-api-image app-bar-repo-- push --&gt;app-bar-ui-image app-bar-repo-- push --&gt;app-bar-api-image unity-chart-repo-- GitOps --&gt;unity-operator-deployment unity-chart-repo-- GitOps --&gt;schema-deployment app-foo-repo-- GitOps --&gt;app-foo-secret app-bar-repo-- GitOps --&gt;app-bar-secret schema-deployment-- pull --&gt;schema-image app-foo-ui-deployment-- pull --&gt;app-foo-ui-image app-foo-api-deployment-- pull --&gt;app-foo-api-image app-bar-ui-deployment-- pull --&gt;app-bar-ui-image app-bar-api-deployment-- pull --&gt;app-bar-api-image unity-operator-deployment-- watch --&gt;app-foo-secret unity-operator-deployment-- watch --&gt;app-bar-secret unity-operator-deployment-- download for validation --&gt;schema-deployment unity-operator-deployment-- download for Helm upgrade --&gt;unity-app-chart unity-operator-deployment-- deploy --&gt;app-foo-ui-deployment unity-operator-deployment-- deploy --&gt;app-foo-api-deployment unity-operator-deployment-- deploy --&gt;app-bar-ui-deployment unity-operator-deployment-- deploy --&gt;app-bar-api-deployment . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/kubernetes.html#architecture",
+    "relUrl": "/cluster-handbook/kubernetes.html#architecture"
+  },"96": {
+    "doc": "Kubernetes",
+    "title": "Labels",
+    "content": "All objects managed in Kubernetes MUST have the following labels: . | app.kubernetes.io/name the name of the repo, e.g. app.kubernetes.io/name: app-foo. | app.kubernetes.io/managed-by the name of the responsible management component, e.g. app.kubernetes.io/managed-by: unity or app.kubernetes.io/managed-by: Helm. If set set unity it indicates the resources was created by a workflow from the UNITY/unity repo. Resources that are managed by Helm, are usually created by the unity-operator and should not be edited manually. | app.kubernetes.io/component the name of the component of the app, this is optional and not set on all resources. An example is app.kubernetes.io/component: api if the deployment or pod belongs to the deployable api of the app ` foo. | . To get all resources that are managed by unity for the app foo run: . kubectl get all,secrets,rolebindings,roles \\ -l app.kubernetes.io/name=app-foo,app.kubernetes.io/managed-by=unity . To get all resources of the component api from the app foo run: . kubectl get all,secrets,rolebindings,roles \\ -l app.kubernetes.io/name=app-foo,app.kubernetes.io/component=api . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/kubernetes.html#labels",
+    "relUrl": "/cluster-handbook/kubernetes.html#labels"
+  },"97": {
+    "doc": "Kubernetes",
+    "title": "Kubernetes",
+    "content": "Table of Contents . | Kubernetes . | Architecture | Labels | . | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/kubernetes.html",
+    "relUrl": "/cluster-handbook/kubernetes.html"
+  },"98": {
+    "doc": "Maven Packages",
+    "title": "Maven Packages",
+    "content": "There might be several reasons why you would use GitHub Packages for maven artifacts along with Nexus. Usual reasons are: . | 3rd Party binary libraries, like IBM db2 JDBC driver or Virus-Scanner SDK | Self-built libraries (or other artifacts) to be used in later pipeline steps | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/maven-packages.html#maven-packages",
+    "relUrl": "/onboarding-handbook/maven-packages.html#maven-packages"
+  },"99": {
+    "doc": "Maven Packages",
+    "title": "Manual upload",
+    "content": "To do a manual upload of an artifact you have to use maven on the command line with a suitable settings.xml file. In settings.xml, there needs to be a section for GitHub with your PAT with scope write:packages for authorization. In Unix-like systems, the default location of that file is ~/.m2/settings.xml. &lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt; &lt;settings&gt; &lt;servers&gt; &lt;server&gt; &lt;id&gt;atc-github-packages&lt;/id&gt; &lt;username&gt;put your qnumber here&lt;/username&gt; &lt;password&gt;put your github token here&lt;/password&gt; &lt;/server&gt; &lt;/servers&gt; &lt;/settings&gt; . A command line to perform upload might look like this: . mvn deploy:deploy-file \\ -Dfile=\"&lt;path to file to upload&gt;\" \\ -Durl=https://maven.atc-github.azure.cloud.bmw/UNITY/&lt;git repository name&gt; \\ -DrepositoryId=atc-github-packages \\ -DgroupId=\"&lt;maven groupId to reference file later&gt;\" \\ -DartifactId=\"&lt;maven artifactId to reference file later&gt;\" \\ -Dversion=\"&lt;maven version to reference file later&gt;\" \\ -DgeneratePom=true \\ -Dmaven.resolver.transport=wagon . Note parameter repositoryId must have same value as server &lt;id&gt; in settings.xml. In this sample generatePom is set to true as there is no manually maintained pom file for this package. You might set it to false and upload pom file with a similar command. In this sample maven.resolver.transport is set to wagon as otherwise there might be errors with some maven versions. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/maven-packages.html#manual-upload",
+    "relUrl": "/onboarding-handbook/maven-packages.html#manual-upload"
+  },"100": {
+    "doc": "Maven Packages",
+    "title": "GitHub Packages in Dependency Management",
+    "content": "Maven provides several mechanisms how additional binary repositories may be used. Here is a sample settings.xml file which uses GitHub Packages along with BMW Nexus: . &lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt; &lt;settings&gt; &lt;servers&gt; &lt;server&gt; &lt;id&gt;atc-github-packages&lt;/id&gt; &lt;username&gt;user&lt;/username&gt; &lt;password&gt;${env.GITHUB_TOKEN}&lt;/password&gt; &lt;/server&gt; &lt;/servers&gt; &lt;profiles&gt; &lt;profile&gt; &lt;id&gt;atc-github&lt;/id&gt; &lt;repositories&gt; &lt;repository&gt; &lt;id&gt;atc-github-packages&lt;/id&gt; &lt;name&gt;atc-github-packages&lt;/name&gt; &lt;url&gt;https://maven.atc-github.azure.cloud.bmw/UNITY/${env.REPO}/&lt;/url&gt; &lt;/repository&gt; &lt;/repositories&gt; &lt;/profile&gt; &lt;/profiles&gt; &lt;activeProfiles&gt; &lt;activeProfile&gt;atc-github&lt;/activeProfile&gt; &lt;/activeProfiles&gt; &lt;/settings&gt; . You might commit such a settings.xml and use it in your workflows. Therefore, you may set GITHUB_TOKEN as well as REPO as environment variables and use maven parameter --settings. - name: clean package working-directory: $ env: GITHUB_TOKEN: $ REPO: $ run: | mvn --batch-mode clean package --settings settings.xml . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/maven-packages.html#github-packages-in-dependency-management",
+    "relUrl": "/onboarding-handbook/maven-packages.html#github-packages-in-dependency-management"
+  },"101": {
+    "doc": "Maven Packages",
+    "title": "BMW Nexus as Mirror",
+    "content": "To fetch packages from the central BMW nexus instead of directly from maven central, a settings.xml can be set up as follows: . &lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt; &lt;settings&gt; &lt;mirrors&gt; &lt;mirror&gt; &lt;id&gt;nexus&lt;/id&gt; &lt;name&gt;BMW Nexus&lt;/name&gt; &lt;url&gt;https://nexus.bmwgroup.net/repository/bmw_repositories/&lt;/url&gt; &lt;mirrorOf&gt;central&lt;/mirrorOf&gt; &lt;/mirror&gt; &lt;/mirrors&gt; &lt;/settings&gt; . This settings.xml can be used locally and in a workflow by adding the maven parameter --settings. mvn --batch-mode clean package --settings settings.xml . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/maven-packages.html#bmw-nexus-as-mirror",
+    "relUrl": "/onboarding-handbook/maven-packages.html#bmw-nexus-as-mirror"
+  },"102": {
+    "doc": "Maven Packages",
+    "title": "Maven Packages",
+    "content": "Table of Contents generated with DocToc . | Maven Packages . | Manual upload | GitHub Packages in Dependency Management | BMW Nexus as Mirror | . | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/maven-packages.html",
+    "relUrl": "/onboarding-handbook/maven-packages.html"
+  },"103": {
+    "doc": "Networking",
+    "title": "Networking",
+    "content": "UNITY exposes all apps and infrastructure under one domain (per environment). | unity-test.bmwgroup.net (for UNITY platform development only) | unity-int.bmwgroup.net (for UNITY app testing and integration) | unity.bmwgroup.net (production use) | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/networking.html#networking",
+    "relUrl": "/cluster-handbook/networking.html#networking"
+  },"104": {
+    "doc": "Networking",
+    "title": "DNS",
+    "content": "graph LR unity-int.bmwgroup.net-- CNAME --&gt;int.apps.pdm-unity-int.azure.cloud.bmw int.apps.pdm-unity-int.azure.cloud.bmw-- A --&gt;ip[10.11.114.229] . For each domain, a DNS CNAME record is registered, which points to Kubernetes clusters DNS. Here is an example on how to resolve the record. $ nslookup unity-int.bmwgroup.net Server: 160.50.252.20 Address: 160.50.252.20#53 Non-authoritative answer: unity-int.bmwgroup.net canonical name = int.apps.pdm-unity-int.azure.cloud.bmw. Name: int.apps.pdm-unity-int.azure.cloud.bmw Address: 10.11.114.229 . This shows, that the CNAME is int.apps.pdm-unity-int.azure.cloud.bmw. For the CNAME, an additional A record resolves to the IP of the ingress controller. $ nslookup int.apps.pdm-unity-int.azure.cloud.bmw Server: 160.50.250.20 Address: 160.50.250.20#53 Non-authoritative answer: Name: int.apps.pdm-unity-int.azure.cloud.bmw Address: 10.11.114.229 . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/networking.html#dns",
+    "relUrl": "/cluster-handbook/networking.html#dns"
+  },"105": {
+    "doc": "Networking",
+    "title": "Migrating to a New Cluster",
+    "content": "When migrating one environment to a new cluster, first the entire unity-chart is deployed to that new cluster and namespace. Next, all apps need to deployed there as well. Assume, the new cluster can be reached under int.apps.new-cluster.azure.cloud.bmw. Before changing the CNAME record, the new cluster can be tested. For example, to test that routing and certificates work as expected for the oauth2-proxy, resolve the ip of the new cluster: . $ nslookup int.apps.new-cluster.azure.cloud.bmw Server: 160.50.250.20 Address: 160.50.250.20#53 Non-authoritative answer: Name: int.apps.new-cluster.azure.cloud.bmw Address: 10.11.112.213 . Next, use this ip, to connect to the oauth2-proxy: . curl -v --resolve unity-int.bmwgroup.net:443:10.11.112.213 https://unity-int.bmwgroup.net/oauth2-proxy/ping . Note that certificate validation (-k) MUST NOT be used, to check that certificates are set up correctly. The output of the curl command should also show the certificates subjectAltName: . $ curl -v --resolve unity-int.bmwgroup.net:443:10.11.112.213 https://unity-int.bmwgroup.net/oauth2-proxy/ping * Added unity-int.bmwgroup.net:443:10.11.112.213 to DNS cache * Trying 10.11.112.213:443... * Connected to unity-int.bmwgroup.net (10.11.112.213) port 443 (#0) * ALPN, offering h2 * ALPN, offering http/1.1 * successfully set certificate verify locations: * CAfile: /etc/ssl/cert.pem * CApath: none * (304) (OUT), TLS handshake, Client hello (1): * (304) (IN), TLS handshake, Server hello (2): * (304) (IN), TLS handshake, Unknown (8): * (304) (IN), TLS handshake, Certificate (11): * (304) (IN), TLS handshake, CERT verify (15): * (304) (IN), TLS handshake, Finished (20): * (304) (OUT), TLS handshake, Finished (20): * SSL connection using TLSv1.3 / AEAD-AES256-GCM-SHA384 * ALPN, server accepted to use h2 * Server certificate: * subject: C=DE; ST=Bavaria; L=Munich; O=Bayerische Motoren Werke AG; OU=PKI Services; CN=d938ec195a13fd003b38e4706d2a656fc5fdaa5d61bd9ba277d5f.cloud.bmw * start date: Oct 14 13:02:55 2022 GMT * expire date: Nov 15 13:02:55 2023 GMT * subjectAltName: host \"unity-int.bmwgroup.net\" matched cert's \"unity-int.bmwgroup.net\" * issuer: DC=corp; DC=bmw; DC=europe; CN=BMW Group Issuing CA SSL1 * SSL certificate verify ok. * Using HTTP2, server supports multiplexing * Connection state changed (HTTP/2 confirmed) * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0 * Using Stream ID: 1 (easy handle 0x7f7fcf810400) &gt; GET /oauth2-proxy/ping HTTP/2 &gt; Host: unity-int.bmwgroup.net &gt; user-agent: curl/7.79.1 &gt; accept: */* &gt; * Connection state changed (MAX_CONCURRENT_STREAMS == 512)! &lt; HTTP/2 200 &lt; date: Fri, 25 Nov 2022 05:37:32 GMT &lt; content-type: text/plain; charset=utf-8 &lt; content-length: 2 &lt; strict-transport-security: max-age=15724800; includeSubDomains &lt; * Connection #0 to host unity-int.bmwgroup.net left intact OK . If the response is OK, everything looks good. Next, change the CNAME record to point to the new cluster via a service request to ntwk-dns-dhcp-sup:global, see INC000040799101 for an example. This will route all traffic to the new cluster without any downtime. Note that it will take the old CNAME record’s TTL until all traffic is safely routed to the new cluster. Check the TTL with nslookup to know how long to wait with the decommissioning of the old cluster: . $ nslookup -debug unity-int.bmwgroup.net Server: 160.50.250.20 Address: 160.50.250.20#53 ------------ QUESTIONS: unity-int.bmwgroup.net, type = A, class = IN ANSWERS: -&gt; unity-int.bmwgroup.net canonical name = int.apps.pdm-unity-int.azure.cloud.bmw. ttl = 2392 -&gt; int.apps.pdm-unity-int.azure.cloud.bmw internet address = 10.11.114.229 ttl = 381 AUTHORITY RECORDS: ADDITIONAL RECORDS: ------------ Non-authoritative answer: unity-int.bmwgroup.net canonical name = int.apps.pdm-unity-int.azure.cloud.bmw. Name: int.apps.pdm-unity-int.azure.cloud.bmw Address: 10.11.114.229 . The output above indicates a TTL for 2392 seconds the CNAME and 381 seconds for the A record. These numbers will change when the lookup is repeated, as they indicate when to refresh the cached DNS entry. graph LR unity-int.bmwgroup.net-.-&gt;int.apps.pdm-unity-int.azure.cloud.bmw unity-int.bmwgroup.net-- CNAME --&gt;int.apps.new-cluster.azure.cloud.bmw int.apps.pdm-unity-int.azure.cloud.bmw-- A --&gt;ip[10.11.114.229] int.apps.new-cluster.azure.cloud.bmw-- A --&gt;new-ip[10.11.112.213] . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/networking.html#migrating-to-a-new-cluster",
+    "relUrl": "/cluster-handbook/networking.html#migrating-to-a-new-cluster"
+  },"106": {
+    "doc": "Networking",
+    "title": "Networking",
+    "content": "Table of Contents . | Networking . | DNS | Migrating to a New Cluster | . | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/networking.html",
+    "relUrl": "/cluster-handbook/networking.html"
+  },"107": {
+    "doc": "PostgreSQL Flexible Server",
+    "title": "PostgreSQL Flexible Server (Pilot Phase)",
+    "content": "PostgreSQL Flexible Server is an Azure Service to run a PostgreSQL server with one or multiple databases. UNITY offers simplified provisioning through the unity-app.*.yaml. Make sure to understand the implications of configuration changes, as they may result in unwanted data loss. ⚠️ The solution is currently in piloting phase and may be tested on the integration environment. It is not sufficiently tested for production workloads yet. The UNITY team is looking forward to your feedback. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/postgresql-flexible-server.html#postgresql-flexible-server-pilot-phase",
+    "relUrl": "/onboarding-handbook/postgresql-flexible-server.html#postgresql-flexible-server-pilot-phase"
+  },"108": {
+    "doc": "PostgreSQL Flexible Server",
+    "title": "Features",
+    "content": ". | Customer Managed Keys . Every database is provisioned with a Customer Manged Key, which is automatically rotated every 30 days. | User assigned managed identity . Every database has a user assigned managed identity. | Point In Time Restore . Database servers can be restored to any point in time up to 35 days in the past. Note that only an entire database server can be restored to a specific point in time. If there are multiple databases on one server, there is no way to restore only a single database. | Major Version Migration . Automatic major version upgrades are supported. You are responsible for executing and testing the upgrades. Note that downgrading a major version is not possible. | Stock Keeping Units (SKUs) . Azure provides a broad range of SKUs. You are responsible for choosing the smallest SKU possible fulfilling your requirement, to keep costs for infrastructure at a minimum. By default, the smallest possible SKU will be picked, which should be sufficient to get started on an integration environment. | Network Integration . You database server will run in a dedicated VNET on Azure. This VNET is integrated into the BMW intranet following the Azure Network Design. In essence, the DB will be accessible from any BMW client with a 10.0.0.0/8 IP. As well as any Azure VNET, such as the one where your application runs. | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/postgresql-flexible-server.html#features",
+    "relUrl": "/onboarding-handbook/postgresql-flexible-server.html#features"
+  },"109": {
+    "doc": "PostgreSQL Flexible Server",
+    "title": "Limitations",
+    "content": ". | No High Availability . High availability is currently disabled by default. This may change in the future. Read more about it in Azure’s High Availability Concept. | Maintenance Windows . PostgreSQL Flexible Servers are security patched automatically during maintenance windows. This can lead to short downtimes. By default, the maintenance window is configured to start Sundays, 00:00 UTC with a duration of one hour. Read more about it in Azure’s Maintenance Concept. Maintenance windows are currently selected by UNITY for you, if you need more ingrained control, please request a new feature by contacting the UNITY team. | No Geo Redundant Backup . Geo redundant backup is currently disabled by default. This may change in the future. Read more about it in Azure’s Geo Redundant Backup and Restore Concept. | No Network Peering . Network peering with the VNET of the Kubernetes cluster for low latency connections is currently not possible, due to limitations on 4Wheels Managed side. From our tests you can expect a latency around 4ms and a throughput of &gt; 270 transactions per seconds. | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/postgresql-flexible-server.html#limitations",
+    "relUrl": "/onboarding-handbook/postgresql-flexible-server.html#limitations"
+  },"110": {
+    "doc": "PostgreSQL Flexible Server",
+    "title": "Provision New Database Server",
+    "content": "You can provision one or multiple database servers for your UNITY app as described below. The best way to provision a new database server is to start with encrypting your administrator password. This can be done in the same way as described in encrypting secret environment variables. When running the encrypt workflow, your yaml path for a Db server named db-v14 would be: postgresqlFlexibleServers.db-v14.administratorPassword . This workflow will create a new branch with your encrypted password. You can check out the branch and extend the config to look like the one below: . postgresqlFlexibleServers: db-v14: administratorPassword: crypt.v1[7kQJslSOT7dQs6XlN/R4Mma27LS/gwJKJ0T63cz7u7M=] version: 14 . After merging this config to the main branch and rolling it out to UNITY, the database server will be provisioned. This config will create one database server db-v14. More advanced configuration is possible with details documented in the unity-app-yaml schema and in the sections below. Connect From Local Machine . 🚨 Spinning up your database can take up to 30 min, so be patient before creating an incident when something does not seam to be working after a few minutes. So far, there is no way to get notified when your database is available, this might be added in the future. The connection will be possible with the following parameters with psql. export PGHOST='{your app repo name}-pfs-{your db server name}.postgres.database.azure.com' export PGUSER=postgres export PGPORT=5432 export PGDATABASE=postgres export PGPASSWORD='{your-password}' psql . So for example, when your app is called foo, your DB server is called db-v14, and the password change-me, then the upper variables will look like: . export PGHOST='app-foo-pfs-db-v14.postgres.database.azure.com' export PGUSER=postgres export PGPORT=5432 export PGDATABASE=postgres export PGPASSWORD='change-me' psql . Create User and Database . To enhance the security of your database, it is discouraged to use the administrator user for all tasks. Instead, it is advisable to set up a dedicated user with minimal permissions. Follow these steps after connecting as an administrator to create a new user for your app, ensuring to choose a secure password, and then proceed to create a new database. CREATE DATABASE int ENCODING 'utf-8' LOCALE 'en_US.utf8'; CREATE USER api WITH ENCRYPTED PASSWORD 'change-me'; GRANT ALL PRIVILEGES ON DATABASE int TO api; . It is essential to restrict the privileges of each user to only the actions they require. For improved security, consider having separate users with different sets of permissions: one for creating the schema and others for read and write operations. Remember that it is best practice to maintain only one database per server, as PITR will be available for the entire server and not for individual databases. This approach ensures a more streamlined and efficient database management process. Setup Quarkus . Quarkus can be set up in various ways to connect to a PostgreSQL database. Recommended articles on the topic are . | Configure Data Sources in Quarkus | Reactive SQL Clients | Using Flyway | Using Hibernate Orm and Jakarta Persistence | Simplified Hibernate Orm With Panache | . The guideline below will demonstrate a minimal setup using Hibernate and Panache to implement a simple REST resource. Add all relevant quarkus extensions . mvn quarkus:add-extension -Dextensions=\"jdbc-postgresql,quarkus-hibernate-orm-panache,quarkus-flyway,resteasy-reactive-jackson\" . Configure the database connection as environment variables on the Quarkus deployment to connect to the database from a deployed app: . deployments: api: # ... container: # ... env: QUARKUS_DATASOURCE_DB_KIND: value: postgresql QUARKUS_DATASOURCE_DB_VERSION: value: \"14\" QUARKUS_DATASOURCE_USERNAME: value: api QUARKUS_DATASOURCE_JDBC_URL: value: jdbc:postgresql://app-foo-pfs-db-v14.postgres.database.azure.com:5432/int secretEnv: QUARKUS_DATASOURCE_PASSWORD: value: crypt.v1[7kQJslSOT7dQs6XlN/R4Mma27LS/gwJK0JT36cz7u7M=] . Note that QUARKUS_DATASOURCE_PASSWORD should contain the encrypted value of the user’s password. Here are a few notes on the most important config options: . | quarkus.hibernate-orm.second-level-caching-enabled is recommended to be set to false in the application.properties for a stateless multi replica deployment, to avoid inconsistent cache state between replicas, read Hibernate Second-Level Cache for details. 🚨 this is a build time config, which cannot be set in the deployment’s env variables. | QUARKUS_DATASOURCE_JDBC_ACQUISITION_TIMEOUT can require some adjustments when you find Acquisition timeout while waiting for new connection errors on startup in the logs. This is an indication that setting up the connection to the database takes too long. One way is to increase QUARKUS_DATASOURCE_JDBC_ACQUISITION_TIMEOUT to e.g. 10 seconds. It is strongly recommended, though, to check the CPU requests and limits, as this timeout can be an indication for too few resources, which is why Quarkus is running into the timeout. | Set QUARKUS_LOG_CATEGORY__ORG_POSTGRESQL__MIN_LEVEL and QUARKUS_LOG_CATEGORY__ORG_POSTGRESQL__LEVEL to TRACE to troubleshoot connection problems. | Set QUARKUS_LOG_CATEGORY__ORG_FLYWAYDB__MIN_LEVEL and QUARKUS_LOG_CATEGORY__ORG_FLYWAYDB__LEVEL to TRACE to troubleshoot problems with flyway. | quarkus.hibernate-orm.metrics.enabled is recommended to be set to true in the application.properties to expose metrics to Prometheus. 🚨 this is a build time config, which cannot be set in the deployment’s env variables. | Set QUARKUS_HIBERNATE_ORM_LOG_SESSION_METRICS to true to see metrics on Hibernate sessions in the logs. This requires quarkus.hibernate-orm.metrics.enabled to be true. | . To test the connection locally, you can set the same environment variables in your IDE or use the dev profile in the application properties. ⚠️ Make sure to never commit the content of QUARKUS_DATASOURCE_PASSWORD in a run configuration or properties file. For managing the schema, it is recommended to use flyway. It is beyond the scope of this documentation to give detailed instructions on flyway. A minimal setup is to add the following application.properties . quarkus.flyway.migrate-at-start=true . ⚠️ When implementing long-running schema migrations, there is the risk that the pod gets killed during startup, before completing the migration due to failing health checks. When long-running schema migrations are required, consider running them from a GitHub workflow or adjust health checks accordingly. Create the schema from the following file api/src/main/resources/db/migration/V1__baseline.sql . CREATE TABLE dev_model_range ( id SERIAL PRIMARY KEY, code TEXT NOT NULL ); INSERT INTO dev_model_range values (0, 'G30'); INSERT INTO dev_model_range values (1, 'G60'); . Implement a minimal resource and entity: . import io.quarkus.hibernate.orm.panache.PanacheEntity; import jakarta.persistence.Entity; @Entity(name = \"dev_model_range\") public class DevModelRange extends PanacheEntity { public String code; public DevModelRange() { } } . import jakarta.ws.rs.GET; import jakarta.ws.rs.Path; import java.util.List; @Path(\"/v1/dev-model-ranges\") public class DevModelRangeResource { @GET public List&lt;DevModelRange&gt; get() { return DevModelRange.listAll(); } } . This should allow to fetch the entities from the following REST resource locally: . GET http://localhost:8080/foo/api/v1/dev-model-ranges/ . Which should result in the following JSON response: . [ { \"id\": 0, \"code\": \"G30\" }, { \"id\": 1, \"code\": \"G60\" } ] . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/postgresql-flexible-server.html#provision-new-database-server",
+    "relUrl": "/onboarding-handbook/postgresql-flexible-server.html#provision-new-database-server"
+  },"111": {
+    "doc": "PostgreSQL Flexible Server",
+    "title": "Change Administrator Password",
+    "content": "The password for the administrator is provided by you in encrypted form, when requesting a new DB server. password encryption follows the same steps as for encrypting secret environment variables. You can update the password any time, and you are fully responsible for maintaining a secure password and rotating it in compliance with current work instructions. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/postgresql-flexible-server.html#change-administrator-password",
+    "relUrl": "/onboarding-handbook/postgresql-flexible-server.html#change-administrator-password"
+  },"112": {
+    "doc": "PostgreSQL Flexible Server",
+    "title": "Change Stock Keeping Unit (SKU)",
+    "content": "You are responsible for choosing the smallest SKU possible fulfilling your requirement, to keep costs for infrastructure at a minimum. By default, the smallest possible burstable SKU will be picked. In some cases (e.g. replication) it is required to switch to a non-burstable SKU (e.g. GP_Standard_D2ds_v4) as shown below. postgresqlFlexibleServers: db: sku: GP_Standard_D2ds_v4 # ... The SKU can be changed at any time and does not result in data loss. While caning the SKU the database will not be available. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/postgresql-flexible-server.html#change-stock-keeping-unit-sku",
+    "relUrl": "/onboarding-handbook/postgresql-flexible-server.html#change-stock-keeping-unit-sku"
+  },"113": {
+    "doc": "PostgreSQL Flexible Server",
+    "title": "Migrate From a PostgreSQL Outside of UNITY",
+    "content": "You should create a dump using pg_dump from your original database and restore it into the new database using pg_restore. Detailed instructions is currently beyond the scope of this documentation. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/postgresql-flexible-server.html#migrate-from-a-postgresql-outside-of-unity",
+    "relUrl": "/onboarding-handbook/postgresql-flexible-server.html#migrate-from-a-postgresql-outside-of-unity"
+  },"114": {
+    "doc": "PostgreSQL Flexible Server",
+    "title": "Replication",
+    "content": "The read replica feature allows you to replicate data from an Azure Database for PostgreSQL server to a read-only replica. Replicas are updated asynchronously with the PostgreSQL engine native physical replication technology. see Read replicas in Azure Database for PostgreSQL. A read replica can be set up for any database server. Before a read replica can be set up, the source database server as well as the read replica server must be configured to have a non-burstable SKU. Here is a complete example: . postgresqlFlexibleServers: db-v14: administratorPassword: crypt.v1[7kQJslSOT7dQs6XlN/R4Mma27LS/gwJKJ0T63cz7u7M=] version: 14 sku: GP_Standard_D2ds_v4 db-v14-replica: administratorPassword: crypt.v1[7kQJslSOT7dQs6XlN/R4Mma27LS/gwJKJ0T63cz7u7M=] version: 14 mode: Replica sourceServerName: db-v14 sku: GP_Standard_D2ds_v4 . Promote Replica . Disconnecting a read replica from its source is called promoting. After promoting a replica it will be a standalone database server which cannot be connected to its source server later on at any point in time. To promote the replica from the example above, add the replicationRole: None. postgresqlFlexibleServers: db-v14: administratorPassword: crypt.v1[7kQJslSOT7dQs6XlN/R4Mma27LS/gwJKJ0T63cz7u7M=] version: 14 sku: GP_Standard_D2ds_v4 db-v14-replica: administratorPassword: crypt.v1[7kQJslSOT7dQs6XlN/R4Mma27LS/gwJKJ0T63cz7u7M=] version: 14 mode: Replica sourceServerName: db-v14 replicationRole: None sku: GP_Standard_D2ds_v4 . 🚨 Note, when a database server was created as replica, you need to keep the sourceServerName and replicationRole role in the config, even if you upgrade the promoted replica to a newer version as shown below. postgresqlFlexibleServers: db-v14: administratorPassword: crypt.v1[7kQJslSOT7dQs6XlN/R4Mma27LS/gwJKJ0T63cz7u7M=] version: 14 db-v14-replica: administratorPassword: crypt.v1[7kQJslSOT7dQs6XlN/R4Mma27LS/gwJKJ0T63cz7u7M=] version: 15 mode: Update sourceServerName: db-v14 replicationRole: None . Note that upgrading a server in replication mode (i.e. replicationRole: null is currently unsupported). ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/postgresql-flexible-server.html#replication",
+    "relUrl": "/onboarding-handbook/postgresql-flexible-server.html#replication"
+  },"115": {
+    "doc": "PostgreSQL Flexible Server",
+    "title": "Point in Time Restore (PITR)",
+    "content": "⚠️ DOWNTIME: while restoring, make sure the original database does not receive any writes. All changes after the restore point will be lost. PITR is the standard way to restore corrupted data. You can restore the state of the entire database server to any point up to 35 days in the past. PITR will always result in a new database server! So the original server will always stat as is. After restoring a database you can destroy the original database if not needed anymore. Here is a step-by-step procedure to recover from corrupted data: . | Decide if you need to shut down your app. To avoid keep writing to the original database which should be replaced, it might be the best approach to shut down your application while restoring your database. To do so, you can set all replicas to 0. deployments: ui: replicas: 0 # ... api: replicas: 0 # ... Alternatively, you can also set your application to a read only mode, if you have prepared your application for this scenario. | Restore your database server by adding another database server with mode PointInTimeRestore. You need to keep your original database server until you have restored into you new database server. postgresqlFlexibleServers: db-v14: version: 14 administratorPassword: crypt.v1[7kQJslSOT7dQs6XlN/R4Mma27LS/gwJKJ0T63cz7u7M=] db-v14-pitr: administratorPassword: crypt.v1[7kQJslSOT7dQs6XlN/R4Mma27LS/gwJKJ0T63cz7u7M=] version: 14 mode: PointInTimeRestore sourceServerName: db-v14 pointInTimeRestoreUTC: \"2023-07-21T08:55:00Z\" . 🚨 the destination server must have the same major version as the source server. 🚨 Note that sourceServerName and pointInTimeRestoreUTC restore must be kept in the config, even if a version upgrade is done or if the source server is deleted. | Verify new DB is up and running. As soon as the recovery process completed, you should verify that it is up and running. Try connecting to your new DB with e.g. psql. export PGHOST=app-foo-pfs-db-v14-pitr.postgres.database.azure.com export PGPORT=5432 export PGDATABASE=int export PGUSER=postgres export PGPASSWORD=\"{your-password}\" pslq . | Switch your app to the new database (and scale it up again) To do so, change the connection URL of your app to the new URL and scale up replicas. deployments: ui: replicas: 1 # ... api: replicas: 1 env: QUARKUS_DATASOURCE_JDBC_URL: value: jdbc:postgresql://app-foo-pfs-db-v14-pitr.postgres.database.azure.com:5432/int # ... | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/postgresql-flexible-server.html#point-in-time-restore-pitr",
+    "relUrl": "/onboarding-handbook/postgresql-flexible-server.html#point-in-time-restore-pitr"
+  },"116": {
+    "doc": "PostgreSQL Flexible Server",
+    "title": "Upgrade Major PostgreSQL Version",
+    "content": "You can migrate from one major version to the next one in an automated way. ⚠️ Note, once a database was upgraded to the next major version, it cannot be downgraded again. There are several protocols you can follow, outlined in the sections below. Upgrade Dry-Run . It is strongly recommended to test major version migration on a PITR server before doing the actual migration. While testing the upgrade, your app is not affected and no downtime will occur. The basic idea is to create a PITR server of a recent timestamp. Instead of switching your app to the restored server, you keep it running on the original DB. The restored replica can be used to test the migration. In detail, follow the steps below: . | Create a PITR replica without changing the version postgresqlFlexibleServers: db-v13: version: 13 # ... db-v14: version: 13 mode: PointInTimeRestore sourceServerName: db-v13 pointInTimeRestoreUTC: \"2023-07-21T08:55:00Z\" # ... | Migrate the replica to the new version by removing the pointInTimeRestoreUTC and sourceServerName and changing the mode to Update. postgresqlFlexibleServers: db-v13: version: 13 # ... db-v14: version: 14 mode: Update # ... | Verify that your new DB is working as expected. | Complete the test by cleaning up the test replica. postgresqlFlexibleServers: db-v13: version: 13 # ... | . Upgrade With Server Switch . ⚠️ DOWNTIME: while upgrading, make sure the original database does not receive any writes. All changes after the restore point will be lost. This protocol follows the dry run outlined below, but combines it with a PITR. | Decide if you need to shut down your app. To avoid keep writing to the original database which should be replaced, it might be the best approach to shut down your application while restoring your database. To do so, you can set all replicas to 0. deployments: ui: replicas: 0 # ... api: replicas: 0 # ... Alternatively, you can also set your application to a read only mode, if you have prepared your application for this scenario. | Restore your database server by adding another database server with mode PointInTimeRestore without changing the version. You need to keep your original database server until you have restored into you new database server. postgresqlFlexibleServers: db-v13: version: 13 administratorPassword: crypt.v1[7kQJslSOT7dQs6XlN/R4Mma27LS/gwJKJ0T63cz7u7M=] db-v14: administratorPassword: crypt.v1[7kQJslSOT7dQs6XlN/R4Mma27LS/gwJKJ0T63cz7u7M=] version: 13 mode: PointInTimeRestore sourceServerName: db-v13 pointInTimeRestoreUTC: \"2023-07-21T08:55:00Z\" . | Verify new DB is up and running. As soon as the recovery process completed, you should verify that it is up and running. Try connecting to your new DB with e.g. psql. export PGHOST=app-foo-pfs-db-v14.postgres.database.azure.com export PGPORT=5432 export PGDATABASE=int export PGUSER=postgres export PGPASSWORD=\"{your-password}\" pslq . | Migrate the replica to the new version by removing the pointInTimeRestoreUTC and sourceServerName and changing the mode to Update. postgresqlFlexibleServers: db-v13: version: 13 # ... db-v14: version: 14 mode: Update # ... | Verify the upgrade succeeded. | Switch your app to the new database (and scale it up again) To do so, change the connection URL of your app to the new URL and scale up replicas. deployments: ui: replicas: 1 # ... api: replicas: 1 env: QUARKUS_DATASOURCE_JDBC_URL: value: jdbc:postgresql://app-foo-pfs-db-v14.postgres.database.azure.com:5432/int # ... | Clean up the old database. postgresqlFlexibleServers: # ... db-v13 removed db-v14: version: 13 # ... | . In-Place Upgrade . ⚠️ DOWNTIME: the database server will not be available during upgrade. It is recommended, to perform a dry run before you do an in place upgrade. Keep in mind that an upgrade may fail, and you should have a cut-over plan to recover from that situation. For prototypes, and apps with very low service level objectives, it may be an option to simply do an in place upgrade. To do so, simply update your DBs config from e.g. postgresqlFlexibleServers: db: version: 13 # ... to: . postgresqlFlexibleServers: db: version: 14 mode: Update # ... ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/postgresql-flexible-server.html#upgrade-major-postgresql-version",
+    "relUrl": "/onboarding-handbook/postgresql-flexible-server.html#upgrade-major-postgresql-version"
+  },"117": {
+    "doc": "PostgreSQL Flexible Server",
+    "title": "Disaster Recovery",
+    "content": "If you accidentally removed a database from your configuration, the database server will be deleted including all data. The UNITY team has undertaken several measures to recover from that disaster. In any case, you should open an incident as soon as possible, as time matters in this case. You will need the UNITY teams assistance in this case. It is made sure that a backup is created from your database before applying any changes such as destroying it. These backups are created using pg_dump and stored in a container. This container will be deleted together with a database. Unlike the deleted database server, it can be recovered for 30 days. That means, 30 days after your database server was deleted, all data is deleted permanently. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/postgresql-flexible-server.html#disaster-recovery",
+    "relUrl": "/onboarding-handbook/postgresql-flexible-server.html#disaster-recovery"
+  },"118": {
+    "doc": "PostgreSQL Flexible Server",
+    "title": "PostgreSQL Flexible Server",
+    "content": "Table of Contents . | PostgreSQL Flexible Server (Pilot Phase) . | Features | Limitations | Provision New Database Server . | Connect From Local Machine | Create User and Database | Setup Quarkus | . | Change Administrator Password | Change Stock Keeping Unit (SKU) | Migrate From a PostgreSQL Outside of UNITY | Replication . | Promote Replica | . | Point in Time Restore (PITR) | Upgrade Major PostgreSQL Version . | Upgrade Dry-Run | Upgrade With Server Switch | In-Place Upgrade | . | Disaster Recovery | . | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/postgresql-flexible-server.html",
+    "relUrl": "/onboarding-handbook/postgresql-flexible-server.html"
+  },"119": {
+    "doc": "PostgreSQL Flexible Server",
+    "title": "PostgreSQL Flexible Server",
+    "content": "🚨 this is the UNITY DevOps team internal documentation. For the application developers documentation how to develop apps with a PostgreSQL Flexible Server, see AppDev Handbook. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/postgresql-flexible-server.html#postgresql-flexible-server",
+    "relUrl": "/cluster-handbook/postgresql-flexible-server.html#postgresql-flexible-server"
+  },"120": {
+    "doc": "PostgreSQL Flexible Server",
+    "title": "Resource Groups",
+    "content": "Currently, all database servers of an app are provisioned in one resource group per app. The reason is, that replication or PITR is only possible inside one resource group. Creating a PITR in a different resource group is currently not possible. The resource group is created by the unity operator via the Azure API and not via terraform. The reason for this is, that we have one terraform state per database server. It would not be possible to maintain the resource group in any of the terraform states, since one resource can only be assigned to one state. The unity operator will take care of . | creating a resource group when it does not exist already. | destroy the resource group if there is no resource inside anymore. | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/postgresql-flexible-server.html#resource-groups",
+    "relUrl": "/cluster-handbook/postgresql-flexible-server.html#resource-groups"
+  },"121": {
+    "doc": "PostgreSQL Flexible Server",
+    "title": "PostgreSQL Flexible Server",
+    "content": "Table of Contents . | PostgreSQL Flexible Server . | Resource Groups | . | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/postgresql-flexible-server.html",
+    "relUrl": "/cluster-handbook/postgresql-flexible-server.html"
+  },"122": {
+    "doc": "References",
+    "title": "References",
+    "content": "The following sections list links and references to various systems and portals, that are relevant for every UNITY DevOps member. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/references.html#references",
+    "relUrl": "/cluster-handbook/references.html#references"
+  },"123": {
+    "doc": "References",
+    "title": "Gangway",
+    "content": "The gangway can be used to download a kubeconfig file. This is required to access the K8s clusters. This only available to members of the relevant AD groups. Dev (Test and Int) . gangway . Prod . Grafana . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/references.html#gangway",
+    "relUrl": "/cluster-handbook/references.html#gangway"
+  },"124": {
+    "doc": "References",
+    "title": "Grafana",
+    "content": "The K8s cluster Grafana is available as listed below. This should not be confused with the Grafana instance for app developers which is documented in AppDev Handbook: Telemetry . Dev (Test and Int) . Grafana . Prod . Grafana . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/references.html#grafana",
+    "relUrl": "/cluster-handbook/references.html#grafana"
+  },"125": {
+    "doc": "References",
+    "title": "Prometheus",
+    "content": "The prometheus UI can be helpful for analyzing metrics, alerts TSDB status and so forth in case of incidents. Dev (Test and Int) . Prometheus UI . Prod . Prometheus UI . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/references.html#prometheus",
+    "relUrl": "/cluster-handbook/references.html#prometheus"
+  },"126": {
+    "doc": "References",
+    "title": "Active Directory Group (ADGR)",
+    "content": "Group admins can assign group members in the ADGR Active Directory Group Tool . Access to the K8s clusters is managed via the following groups . | APPL_pdm_unity_integration | APPL_pdm_unity_integration_view | APPL_pdm_unity_production_admin | APPL_pdm_unity_production_view | . Owner groups for the clusters are: . | APPL_pdm_unity_integration (int) | APPL_pdm_unity_production_admin (prod) | . See Cluster Owner ADGR Group for further details. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/references.html#active-directory-group-adgr",
+    "relUrl": "/cluster-handbook/references.html#active-directory-group-adgr"
+  },"127": {
+    "doc": "References",
+    "title": "References",
+    "content": "Table of Contents . | References . | Gangway . | Dev (Test and Int) | Prod | . | Grafana . | Dev (Test and Int) | Prod | . | Prometheus . | Dev (Test and Int) | Prod | . | Active Directory Group (ADGR) | . | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/references.html",
+    "relUrl": "/cluster-handbook/references.html"
+  },"128": {
+    "doc": "Regular Activities",
+    "title": "Regular Activities",
+    "content": "There are some tasks, which must be executed by the UNITY team on a regular basis, as these cannot be fully automated. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/regular-activities.html#regular-activities",
+    "relUrl": "/cluster-handbook/regular-activities.html#regular-activities"
+  },"129": {
+    "doc": "Regular Activities",
+    "title": "Update Quarkus Version",
+    "content": "The create-quarkus-app.bash contains instructions from Bootstrapping the project The version will be bumped by dependabot when a new version is available. The pull requests from dependabot need to be reviewed, merged and the workflow should be tested afterwards. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/regular-activities.html#update-quarkus-version",
+    "relUrl": "/cluster-handbook/regular-activities.html#update-quarkus-version"
+  },"130": {
+    "doc": "Regular Activities",
+    "title": "Update Angular Version",
+    "content": "The create-angular-app.bash contains a variable for the current Angular major version to use: . ANGULAR_VERSION: '16' . As soon as a new major angular version is release, which can be found e.g. on angular-cli release it should be bumped to that new major version. In addition, dependencies like @bmw-ds/components@latest need to be checked to be compatible with the new Angular major version. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/regular-activities.html#update-angular-version",
+    "relUrl": "/cluster-handbook/regular-activities.html#update-angular-version"
+  },"131": {
+    "doc": "Regular Activities",
+    "title": "Enable Dependabot on All Repos",
+    "content": "Currently, there is no API to provide dependabot access to a new private repository. That means, dependabot cannot be granted access to dependabot on repository creation. Instead, the “Enable All” button on Dependabot security updates should be clicked. In the end, all private repositories should be listed under “Grant Dependabot access to private repositories”. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/regular-activities.html#enable-dependabot-on-all-repos",
+    "relUrl": "/cluster-handbook/regular-activities.html#enable-dependabot-on-all-repos"
+  },"132": {
+    "doc": "Regular Activities",
+    "title": "Certificates",
+    "content": "To keep the trust store up to date, any new certificate published on Root and Intermediate Certificates must be added to bmw-certificates and released as new chart version. All charts depending on bmw-certificates need to be updated and bumped as well. Search for org:UNITY filename:Chart.yaml bmw-certificates to find all places. ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/regular-activities.html#certificates",
+    "relUrl": "/cluster-handbook/regular-activities.html#certificates"
+  },"133": {
+    "doc": "Regular Activities",
+    "title": "Regular Activities",
+    "content": "Table of Contents . | Regular Activities . | Update Quarkus Version | Update Angular Version | Enable Dependabot on All Repos | Certificates | . | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/regular-activities.html",
+    "relUrl": "/cluster-handbook/regular-activities.html"
+  },"134": {
+    "doc": "Resources",
+    "title": "Resources",
+    "content": "Compute resources, such as memory and CPU requirements for the app can be configured in the unity-app.*.yaml files. deployments: api: # ... container: resources: limits: cpuMillis: 100 memoryMiB: 512 requests: cpuMillis: 10 memoryMiB: 128 . An ideal config would set requests to as many resources as the app needs when being idle (e.g. a night) and limit to as many resources as needed under full load. Setting resource correctly is non-trivial. Consult the metrics dashboards in Grafana: . | Container Resources (int) | Container Resources (prod) | . There are three dashboards showing the absolute and relative consumption for each app and component. After selecting e.g. the last 24h time range, make sure the memory and CPU usage is within the request and limit range. The example above shows that the memory consumption is always below 100% of the configured limit but is most of the time between 70% and 80% of the requested memory. This give the best compromise of cost efficiency and stability. The same rules apply for CPU usage, which may look like in the following example: . Always keep in mind that high resource configuration will directly result in higher costs. So just setting everything to the maximum may raise some questions. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/resources.html#resources",
+    "relUrl": "/onboarding-handbook/resources.html#resources"
+  },"135": {
+    "doc": "Resources",
+    "title": "Resources",
+    "content": "Table of Contents . | Resources | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/resources.html",
+    "relUrl": "/onboarding-handbook/resources.html"
+  },"136": {
+    "doc": "Restore decommission App",
+    "title": "Restore Decommissioned App",
+    "content": "If you want to restore a decommissioned app you need to: . | Unarchive app repository (only an admin can do this) | Run Recreate App Service Account workflow for each environment of the app you want to restore. This will recreate not only the service account but also the secretes, roles and role bindings in k8s cluster for the selected environment. | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/restore-decommissioned-app.html#restore-decommissioned-app",
+    "relUrl": "/cluster-handbook/restore-decommissioned-app.html#restore-decommissioned-app"
+  },"137": {
+    "doc": "Restore decommission App",
+    "title": "Restore decommission App",
+    "content": "Table of Contents . | Restore Decommissioned App | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/restore-decommissioned-app.html",
+    "relUrl": "/cluster-handbook/restore-decommissioned-app.html"
+  },"138": {
+    "doc": "Security",
+    "title": "Security",
+    "content": "Vulnerability scanning and other security features are enabled by default by the UNITY platform. The goal ist to make fixing security features as for app developers as easy as possible. However, it is the application developers responsibility to fix vulnerabilities and security features in the appliation code. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/security.html#security",
+    "relUrl": "/onboarding-handbook/security.html#security"
+  },"139": {
+    "doc": "Security",
+    "title": "Dependabot Alerts",
+    "content": "Dependabot alerts are enabled for all repositories in the UNITY organisation. Known Issues . There is currently a known issue with the @bmw-ds/components dependency. There is a Malware in @bmw-ds/components alert, which can be safely dismissed as “This alert is inaccurate or incorrect”: . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/security.html#dependabot-alerts",
+    "relUrl": "/onboarding-handbook/security.html#dependabot-alerts"
+  },"140": {
+    "doc": "Security",
+    "title": "Application Security Testing (AST)",
+    "content": "UNITY does not provide any kind of AST out of the box. Apps are responsible for AST and fulfill all BMW requirements on AST. The AST Navigator is a good starting point. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/security.html#application-security-testing-ast",
+    "relUrl": "/onboarding-handbook/security.html#application-security-testing-ast"
+  },"141": {
+    "doc": "Security",
+    "title": "Content Security Policy (CSP)",
+    "content": "A strong CSP provides an effective second layer of protection against various types of vulnerabilities, especially XSS. Although CSP doesn’t prevent web applications from containing vulnerabilities, it can make those vulnerabilities significantly more difficult for an attacker to exploit. See Defense in Depth. The recommended Content-Security-Policy is frame-ancestors 'self'; form-action 'self'; object-src 'none'; default-src 'self'; which can be set like in the following example: . deployments: ui: headers: response: add: Content-Security-Policy: frame-ancestors 'self'; form-action 'self'; object-src 'none'; default-src 'self'; remove: - Content-Security-Policy . However, when setting default-src 'self' pages generated by frameworks such as Swagger UI and Angular will not work out of the box, which is why the default CSP config does not include default-src 'self. There are alternative secure approaches which are described in the Content Security Policy Cheat Sheet. Setting nonces or hashes must be solved on the application side and is beyond the scope of this article. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/security.html#content-security-policy-csp",
+    "relUrl": "/onboarding-handbook/security.html#content-security-policy-csp"
+  },"142": {
+    "doc": "Security",
+    "title": "Cross-Site Request Forgery (CSRF) Protection",
+    "content": "Application developers are responsible for protecting their apps against CSRF attacks. There are various ways to do so, which are described in depth in the Cross-Site Request Forgery Prevention Cheat Sheet. Application developers should at least follow the guidelines below to protect a simple web application. | Application state changing requests must be implemented as POST, PUT, PATCH or DELETE requests. | A GET and HEAD requests must not lead to any state change on the application side (e.g. an UPDATE on a DB). | All POST requests must require a non-empty message body (e.g. JSON) to transform them from a simple request to a request requiring CORS preflight requests. | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/security.html#cross-site-request-forgery-csrf-protection",
+    "relUrl": "/onboarding-handbook/security.html#cross-site-request-forgery-csrf-protection"
+  },"143": {
+    "doc": "Security",
+    "title": "Security",
+    "content": "Table of Contents . | Security . | Dependabot Alerts . | Known Issues | . | Application Security Testing (AST) | Content Security Policy (CSP) | Cross-Site Request Forgery (CSRF) Protection | . | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/security.html",
+    "relUrl": "/onboarding-handbook/security.html"
+  },"144": {
+    "doc": "Technical Accounts",
+    "title": "Technical Accounts",
+    "content": " ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/technical-accounts.html#technical-accounts",
+    "relUrl": "/cluster-handbook/technical-accounts.html#technical-accounts"
+  },"145": {
+    "doc": "Technical Accounts",
+    "title": "QQ-Users",
+    "content": "To run the UNITY platform, some technical accounts are required: . | UNITY bot aka qqunit1 is a technical account to implement automated workflows inside GitHub enterprise. | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/technical-accounts.html#qq-users",
+    "relUrl": "/cluster-handbook/technical-accounts.html#qq-users"
+  },"146": {
+    "doc": "Technical Accounts",
+    "title": "QD-Users",
+    "content": ". | Charlie Brown aka qqunit0 is a test persona which can be employed to test UNITY app development workflows. | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/technical-accounts.html#qd-users",
+    "relUrl": "/cluster-handbook/technical-accounts.html#qd-users"
+  },"147": {
+    "doc": "Technical Accounts",
+    "title": "Technical Accounts",
+    "content": "Table of Contents . | Technical Accounts . | QQ-Users | QD-Users | . | . ",
+    "url": "/WADTFY/wadtfy-docs/cluster-handbook/technical-accounts.html",
+    "relUrl": "/cluster-handbook/technical-accounts.html"
+  },"148": {
+    "doc": "Telemetry",
+    "title": "Telemetry",
+    "content": "Telemetry data jointly refers to logs, metrics, traces and other diagnostic data of your app. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/telemetry.html#telemetry",
+    "relUrl": "/onboarding-handbook/telemetry.html#telemetry"
+  },"149": {
+    "doc": "Telemetry",
+    "title": "Logging",
+    "content": "Application logs can be accessed in Grafana: . | Grafana int | Grafana | . In the Explore tab, logs can be searched by selecting Loki as datasource. Search in Logs . Logs can be search using LogQL. Here are a few examples to start with: . | Select logs for the app-test’s api component from the main container: {app=\"app-test\", component=\"api\", container=\"main\"} . | Find logs containing the word NullPointerException in the logs {app=\"app-test\", component=\"api\", container=\"main\"} |= `NullPointerException` . | Select logs for multiple containers: {app=\"app-test\", component=\"api\", container=~\"main|authz|envoy\"} . | Select logs by querying a json property (works with JSON logs only) {app=\"app-test\", component=\"api\", container=~\"main\"} | json | level=\"WARN\" . | Print only part of a JSON log entry: {app=\"app-test\", component=\"api\", container=~\"main\"} | json | line_format \"\" . | . Live Logs . To follow logs of an app’s component, select the relevant logs by label and click the Live button, the logs will update automatically. Your browser does not support the video tag. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/telemetry.html#logging",
+    "relUrl": "/onboarding-handbook/telemetry.html#logging"
+  },"150": {
+    "doc": "Telemetry",
+    "title": "Metrics",
+    "content": "Application metrics can be accessed in Grafana: . | Grafana int | Grafana | . In the Explore tab, metrics be explored by selecting Prometheus as datasource. Metrics can be explored using PromQL. Here are a few examples to start with: . | Select the up metric and sum by component: sum (up{app=\"app-test\"}) by (component) . | Show absolute memory usage in MB avg(container_memory_working_set_bytes{pod=~\"app-test-api-.*\", container=~\"main\"}) by (pod, container) / 1e6 . | Show memory usage relative to limits avg(container_memory_working_set_bytes{pod=~\"app-test-api-.*\", container=~\"main\"}) by (pod, container) / avg(kube_pod_container_resource_limits{pod=~\"app-test-api-.*\", container=~\"main\", resource=\"memory\"} &gt; 0) by (pod, container) . | Show memory usage relative to requests avg(container_memory_working_set_bytes{pod=~\"app-test-api-.*\", container=~\"main\"}) by (pod, container) / avg(kube_pod_container_resource_requests{pod=~\"app-test-api-.*\", container=~\"main\", resource=\"memory\"} &gt; 0) by (pod, container) . | . Custom Metrics . If the application wants to monitor its own metrics, this can be done be defining the metrics endpoint as follows: . deployments: api: container: metrics: /my-app/api/metrics . In this case the endpoint /my-app/api/metrics will be scraped and the exposed metrics can be explored as described above. This endpoint will be available only from within the Kubernetes cluster. It will not be possible to access the metrics endpoint via the ingress (for example https://unity.bmwgroup.net/my-app/api/metrics will be forbidden). Using a labeling where the cardinality of the value set is high (e.g. email address) can dramatically increase the amount of data stored (for more information please refer to Prometheus’s official guide). Therefore, there are some limitations regarding the custom metrics to prevent overloading and killing the time series database: . | The maximum number of labels per sample is 10 | The maximum number of samples per scrape is 200 | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/telemetry.html#metrics",
+    "relUrl": "/onboarding-handbook/telemetry.html#metrics"
+  },"151": {
+    "doc": "Telemetry",
+    "title": "ITSM Alerting",
+    "content": "It is possible to define Prometheus Alerting Rules which can be configured to trigger incident creation. The prerequisite for this is a valid monitor contract ID (MCID) which can be created in the Application Monitoring Database. An alert can then be configured as follows: . appId: APP-1234 deployments: api: replicas: 1 container: # Container configuration alerts: foo_total: description: Foo_total has reached 10 for label 'prom-rule-test'. expr: foo_total{metric=\"prom-rule-test\"} &gt; 10 for: 10m labels: # itsm_app_id: APP-789 # optional APP-ID from the MCID. Only required if different from the appId provided above itsm_contract_id: 10APP123456789 # your MCID from the Application Monitoring Database itsm_enabled: true itsm_event_id: foo_total_reached_10 itsm_severity: MINOR severity: other summary: Foo_total is greater then 10 . For more information regarding alerts integration please refer to 4Wheels Managed documentation. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/telemetry.html#itsm-alerting",
+    "relUrl": "/onboarding-handbook/telemetry.html#itsm-alerting"
+  },"152": {
+    "doc": "Telemetry",
+    "title": "Tracing",
+    "content": "Tracing is not available yet. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/telemetry.html#tracing",
+    "relUrl": "/onboarding-handbook/telemetry.html#tracing"
+  },"153": {
+    "doc": "Telemetry",
+    "title": "Telemetry",
+    "content": "Table of Contents . | Telemetry . | Logging . | Search in Logs | Live Logs | . | Metrics . | Custom Metrics | . | ITSM Alerting | Tracing | . | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/telemetry.html",
+    "relUrl": "/onboarding-handbook/telemetry.html"
+  },"154": {
+    "doc": "Unity App Yaml",
+    "title": "Unity App Yaml",
+    "content": "The unity-app.*.yaml files is the central point of interaction of a UNITY app and the platform. Several files, one for each environment, specify the configuration of an app. Bv default this is: . | unity-app.int.yaml for the integration environment. | unity-app.prod.yaml for the production environment. | . The schema for these files can be found here: https://unity.bmwgroup.net/unity/unity-app.schema.json . The schema does not only allow validation of the configuration, but also contains documentation of each property. It is recommended to map the schema to the unity-app.*.yaml files in an IDE, as this will enable autocompletion and inline documentation. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/unity-app-yaml.html#unity-app-yaml",
+    "relUrl": "/onboarding-handbook/unity-app-yaml.html#unity-app-yaml"
+  },"155": {
+    "doc": "Unity App Yaml",
+    "title": "IntelliJ and Other JetBrains IDEs",
+    "content": "Enable JSON schema validation and autocompletion following the steps below: . | Open Preferences and go to Language and Frameworks &gt; Schemas and DTDs &gt; JSON Schema Mappings. | Click on the + to add a new schema mapping. | Fill the following fields . | Name: unit-app | Schema File or URL: https://unity.bmwgroup.net/unity/unity-app.schema.json | Schema version: JSON Schema version 7 | . | click on the + below and set: File path pattern: unity-app**.yaml | Open e.g. the unity-app.int.yaml and hit Ctrl + Space to get autocompletion. | . Your browser does not support the video tag. The final config looks as follows. ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/unity-app-yaml.html#intellij-and-other-jetbrains-ides",
+    "relUrl": "/onboarding-handbook/unity-app-yaml.html#intellij-and-other-jetbrains-ides"
+  },"156": {
+    "doc": "Unity App Yaml",
+    "title": "Unity App Yaml",
+    "content": "Table of Contents . | Unity App Yaml . | IntelliJ and Other JetBrains IDEs | . | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/unity-app-yaml.html",
+    "relUrl": "/onboarding-handbook/unity-app-yaml.html"
+  },"157": {
+    "doc": "URLs",
+    "title": "URLs",
+    "content": "UNITY apps are exposed on the unity domains: . | unity-test.bmwgroup.net (for UNITY platform development only) | unity-int.bmwgroup.net (for UNITY app testing and integration) | unity.bmwgroup.net (for UNITY app production use) | . The deployments of a UNITY app are exposed on a path as follows: unity-test.bmwgroup.net/foo/ui/ The first path segment is the name of the UNITY app, while the second is the name of the deployment. A unity-app.*.yaml file for the example URL would look as follows: . name: foo deployments: ui: container: # ... So, in general, a UNITY app may expose as many deployments as needed. To make one deployment the home page of the app, one redirect may be configured, which redirects all traffic from unity-test.bmwgroup.net/foo/ui/ to that home page. A typical configuration looks as follows: . name: foo redirect: ui/ deployments: ui: container: # ... Which redirects all traffic from unity-test.bmwgroup.net/foo/ to unity-test.bmwgroup.net/foo/ui/. Back-end only applications may configure redirects to a Swagger UI page instead: . name: foo redirect: api/swagger-ui deployments: api: container: # ... ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/urls.html#urls",
+    "relUrl": "/onboarding-handbook/urls.html#urls"
+  },"158": {
+    "doc": "URLs",
+    "title": "IP Ranges",
+    "content": "In order to configure firewall rules to access UNITY the following IP ranges are used to expose UNITY: . | unity-int.bmwgroup.net: Network CIDR: 10.11.114.128/25 | unity.bmwgroup.net: Network CIDR: 10.6.181.224/27 | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/urls.html#ip-ranges",
+    "relUrl": "/onboarding-handbook/urls.html#ip-ranges"
+  },"159": {
+    "doc": "URLs",
+    "title": "URLs",
+    "content": "Table of Contents . | URLs . | IP Ranges | . | . ",
+    "url": "/WADTFY/wadtfy-docs/onboarding-handbook/urls.html",
+    "relUrl": "/onboarding-handbook/urls.html"
+  }
+}
